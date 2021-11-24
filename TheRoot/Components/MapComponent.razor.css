@@ -1,0 +1,7 @@
+﻿.map {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url(../Assets/map.jpg);
+    height: 100vh;
+    width: 109vh;
+}

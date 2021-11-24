@@ -1,0 +1,9 @@
+﻿<div class="col-xl-9 p-0">
+    <div class="position-relative map map-background">
+        @foreach (var clearing in Clearings)
+        {
+            <ClearingComponent Clearing="@clearing"></ClearingComponent>
+        }
+        <CraftingItemsComponent />
+    </div>
+</div>

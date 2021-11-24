@@ -1,0 +1,68 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = TheRoot
+build_property.RootNamespace = TheRoot
+build_property.ProjectDir = C:\Users\Yarema\source\repos\TheRoot\TheRoot\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\Yarema\source\repos\TheRoot\TheRoot
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/Yarema/source/repos/TheRoot/TheRoot/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Yarema/source/repos/TheRoot/TheRoot/Components/ActionPanel.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBY3Rpb25QYW5lbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Yarema/source/repos/TheRoot/TheRoot/Components/MarquiseTabletComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xNYXJxdWlzZVRhYmxldENvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Yarema/source/repos/TheRoot/TheRoot/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Yarema/source/repos/TheRoot/TheRoot/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Yarema/source/repos/TheRoot/TheRoot/Components/ClearingComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDbGVhcmluZ0NvbXBvbmVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-fx2p326fjy
+
+[C:/Users/Yarema/source/repos/TheRoot/TheRoot/Components/CraftingItemComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDcmFmdGluZ0l0ZW1Db21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-3tvslgv26k
+
+[C:/Users/Yarema/source/repos/TheRoot/TheRoot/Components/CraftingItemsComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDcmFmdGluZ0l0ZW1zQ29tcG9uZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-fy9la45jeb
+
+[C:/Users/Yarema/source/repos/TheRoot/TheRoot/Components/MapComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xNYXBDb21wb25lbnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-gdql5c10i5
+
+[C:/Users/Yarema/source/repos/TheRoot/TheRoot/Components/SlotComponent.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTbG90Q29tcG9uZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-zq3fqpwh8n
+
+[C:/Users/Yarema/source/repos/TheRoot/TheRoot/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-cey7p2dws7
+
+[C:/Users/Yarema/source/repos/TheRoot/TheRoot/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-pplavjsx9h
+
+[C:/Users/Yarema/source/repos/TheRoot/TheRoot/Pages/_Host.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0hvc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 

@@ -1,0 +1,28 @@
+﻿.clearing {
+    width: 12%;
+    height: 13%;
+    position: absolute;
+}
+
+.fox-clearing {
+    border: 2px solid #ff0000;
+}
+
+.rabbit-clearing {
+    border: 2px solid #ffd800;
+}
+
+.mouse-clearing {
+    border: 2px solid #ff6a00;
+}
+
+.activated-clearing {
+    border: 2px solid #ffffff;
+}
+
+.dominance-marker {
+    width: 15%;
+    height: 15%;
+    left: 85%;
+    top: 85%;
+}

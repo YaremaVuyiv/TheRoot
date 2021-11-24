@@ -1,0 +1,23 @@
+﻿<div class="modal fade" id="tabletModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 99vh;">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div style="background-image: url('../Assets/Tablets/marquiseTablet.png'); height: 77vh; width: 99vh; position: relative; background-size: contain">
+                    @foreach (var sawmillSlot in SawmillSlots)
+                    {
+                        <SlotComponent Slot="@sawmillSlot" />
+                    }
+                    @foreach (var workShopSlot in WorkShopSlots)
+                    {
+                        <SlotComponent Slot="@workShopSlot" />
+                    }
+                    @foreach (var recruiterSlot in RecruiterSlots)
+                    {
+                        <SlotComponent Slot="@recruiterSlot" />
+                    }
+                    <div style="bottom: 10%; right: 10%">10</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+﻿<div>
+    <div style="width: 3%; height: 13%; position: absolute; left: @(Clearing.Location.X + 12)%; top: @Clearing.Location.Y%;">
+        @foreach (var warrior in Warriors)
+        {
+            if (warrior.Value > 0)
+            {
+                <div class="row m-0">
+                    <img class="col-7 p-0 w-100" src="../Assets/Warriors/catWarrior.png" />
+                    <div class="col-5 p-0" style="font-size: 1.7vh;">x(@warrior.Value)</div>
+                </div>
+            }
+        }
+    </div>
+    <div class="clearing @ClearingBorder"
+         style="left: @(Clearing.Location.X)%; top: @(Clearing.Location.Y)%"
+         @onclick="@OnClearingClick">
+        <p>@Clearing.Id</p>
+        @foreach (var slot in Slots)
+        {
+            <SlotComponent Slot="slot" />
+        }
+        <div class="dominance-marker position-absolute" style="background-color: #@DominanceColor"></div>
+    </div>
+</div>
