@@ -451,4 +451,6 @@ public record Game : BaseEntity
     public ICollection<Card> Discard { get; set; }
 
     public ICollection<ItemType> CraftableItems { get; set; }
+
+    public ICollection<Faction> Factions { get; set; }
 }

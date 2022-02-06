@@ -54,7 +54,6 @@ namespace TheRoot.Infrastructure
             modelBuilder.ApplyConfiguration(new EyrieFactionConfiguration());
             modelBuilder.ApplyConfiguration(new AllianceFactionConfiguration());
             modelBuilder.ApplyConfiguration(new GameConfiguration());
-
             modelBuilder.ApplyConfiguration(new ClearingConfiguration());
 
             base.OnModelCreating(modelBuilder);
@@ -93,6 +92,9 @@ namespace TheRoot.Infrastructure
                 .HasConstraintName("FK_Game_Discard_GameId")
                 .OnDelete(DeleteBehavior.NoAction);
             builder.HasMany(x => x.CraftableItems)
+                .WithOne()
+                .OnDelete(DeleteBehavior.NoAction);
+            builder.HasMany(x => x.Factions)
                 .WithOne()
                 .OnDelete(DeleteBehavior.NoAction);
         }
