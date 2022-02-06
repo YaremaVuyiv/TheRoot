@@ -26,6 +26,7 @@ namespace TheRoot.Infrastructure
         public DbSet<EyrieFaction> EyrieFactions { get; set; }
         public DbSet<AllianceFaction> AllianceFactions { get; set; }
         public DbSet<Game> Games { get; set; }
+        public DbSet<CraftingPiece> CraftingPieces {get;set;}
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -55,16 +56,10 @@ namespace TheRoot.Infrastructure
             modelBuilder.ApplyConfiguration(new AllianceFactionConfiguration());
             modelBuilder.ApplyConfiguration(new GameConfiguration());
             modelBuilder.ApplyConfiguration(new ClearingConfiguration());
+            modelBuilder.ApplyConfiguration(new CraftingPieceConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
-    }
-
-    public class ClearingWarrior
-    {
-        public Clearing Clearing { get; set; }
-
-        public Warrior Warrior { get; set; }
     }
 
     public class WarriorConfiguration : IEntityTypeConfiguration<Warrior>
@@ -74,6 +69,27 @@ namespace TheRoot.Infrastructure
             builder.HasKey(x => x.Id);
             builder.HasOne(x => x.FactionType)
                 .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
+        }
+    }
+
+    public class CraftingPieceConfiguration : IEntityTypeConfiguration<CraftingPiece>
+    {
+        public void Configure(EntityTypeBuilder<CraftingPiece> builder)
+        {
+            builder.HasKey(x => x.Id);
+            builder.HasOne(x => x.ClearingType)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Property<int>("_factionId")
+                .UsePropertyAccessMode(PropertyAccessMode.Field)
+                .HasColumnName("FactionId")
+                .IsRequired(true);
+
+            builder.HasOne<Faction>()
+                .WithMany(x => x.CraftingPieces)
+                .HasForeignKey("_factionId")
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
@@ -109,9 +125,6 @@ namespace TheRoot.Infrastructure
                 .WithMany()
                 .OnDelete(DeleteBehavior.NoAction);
             builder.HasMany(x => x.Cards)
-                .WithOne()
-                .OnDelete(DeleteBehavior.NoAction);
-            builder.HasMany(x => x.UsedCraftingPieces)
                 .WithOne()
                 .OnDelete(DeleteBehavior.NoAction);
             builder.HasMany(x => x.Items)

@@ -389,7 +389,7 @@ public record Faction : BaseEntity
 
     public ICollection<Card> Cards { get; set; }
 
-    public ICollection<ClearingType> UsedCraftingPieces { get; set; }
+    public ICollection<CraftingPiece> CraftingPieces { get; set; }
 
     public ICollection<ItemType> Items { get; set; }
 }
@@ -438,6 +438,17 @@ public record AllianceFaction : Faction
     public ICollection<Card> Support { get; set; }
 
     public int UsedOfficers { get; set; }
+}
+
+public record CraftingPiece : BaseEntity
+{
+    public CraftingPiece(int id) : base(id)
+    {
+    }
+
+    public ClearingType ClearingType { get; init; }
+
+    private int _factionId { get; init; }
 }
 
 public record Game : BaseEntity
