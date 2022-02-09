@@ -27,6 +27,7 @@ namespace TheRoot.Infrastructure
         public DbSet<AllianceFaction> AllianceFactions { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<CraftingPiece> CraftingPieces {get;set;}
+        public DbSet<Ruin> Ruins { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -57,6 +58,7 @@ namespace TheRoot.Infrastructure
             modelBuilder.ApplyConfiguration(new GameConfiguration());
             modelBuilder.ApplyConfiguration(new ClearingConfiguration());
             modelBuilder.ApplyConfiguration(new CraftingPieceConfiguration());
+            modelBuilder.ApplyConfiguration(new RuinConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
@@ -69,6 +71,17 @@ namespace TheRoot.Infrastructure
             builder.HasKey(x => x.Id);
             builder.HasOne(x => x.FactionType)
                 .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
+        }
+    }
+
+    public class RuinConfiguration : IEntityTypeConfiguration<Ruin>
+    {
+        public void Configure(EntityTypeBuilder<Ruin> builder)
+        {
+            builder.ToTable("Ruins");
+            builder.HasMany(x => x.RuinItems)
+                .WithOne()
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
@@ -223,7 +236,7 @@ namespace TheRoot.Infrastructure
             builder.HasMany(x => x.ClearingTokens)
                 .WithOne()
                 .OnDelete(DeleteBehavior.NoAction);
-            builder.HasMany(x => x.Slots)
+            builder.HasMany(x => x.Buildings)
                 .WithOne()
                 .OnDelete(DeleteBehavior.NoAction);
         }

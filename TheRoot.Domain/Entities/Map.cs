@@ -19,7 +19,7 @@ public record Clearing : BaseEntity
     public IReadOnlyCollection<Token> ClearingTokens => _clearingTokens;
 
     private List<Building> _clearingSlots;
-    public IReadOnlyCollection<Building> Slots => _clearingSlots;
+    public IReadOnlyCollection<Building> Buildings => _clearingSlots;
 
     public int MaxNumberOfBuildings { get; init; }
 
@@ -360,6 +360,15 @@ public record Building : BaseEntity
             BuildingType.Nest => FactionType.EyrieDynasties,
             _ => null
         };
+}
+
+public record Ruin : Building
+{
+    public Ruin(int id) : base(id)
+    {
+    }
+
+    public ICollection<ItemType> RuinItems { get; init; }
 }
 
 public record Token : BaseEntity
