@@ -85,7 +85,7 @@ public class ClearingsRepository : IClearingsRepository
     {
         var result = StateContainer.Clearings
             .First(x => x.Id == clearingId)
-            .Slots
+            .Buildings
             .Select(x => (BuildingType?)x.SlotPiece)
             .ToList();
 
@@ -96,7 +96,7 @@ public class ClearingsRepository : IClearingsRepository
     {
         var result = StateContainer.Clearings
             .First(x => x.Id == clearingId)
-            .Slots
+            .Buildings
             .ToList();
 
         return Task.FromResult(result);
