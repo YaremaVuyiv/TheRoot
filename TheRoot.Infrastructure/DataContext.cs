@@ -21,13 +21,17 @@ namespace TheRoot.Infrastructure
         public DbSet<Token> Tokens { get; set; }
         public DbSet<Building> Buildings { get; set; }
         public DbSet<Faction> Factions { get; set; }
-        public DbSet<WarriorsFaction> WarriorsFactions { get; set; }
         public DbSet<MarquiseFaction> MarquiseFactions { get; set; }
         public DbSet<EyrieFaction> EyrieFactions { get; set; }
         public DbSet<AllianceFaction> AllianceFactions { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<CraftingPiece> CraftingPieces {get;set;}
         public DbSet<Ruin> Ruins { get; set; }
+        public DbSet<WarriorsAgregate> WarriorsAgregates { get; set; }
+        public DbSet<TokensAgregate> TokensAgregates { get; set; }
+        public DbSet<BuildingsAgregate> BuildingsAgregates { get; set; }
+        public DbSet<CardsAgregate> CardsAgregates { get; set; }
+        public DbSet<ItemsAgregate> ItemsAgregates { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -51,7 +55,6 @@ namespace TheRoot.Infrastructure
             modelBuilder.ApplyConfiguration(new BuildingConfiguration());
             modelBuilder.ApplyConfiguration(new TokenConfiguration());
             modelBuilder.ApplyConfiguration(new FactionConfiguration());
-            modelBuilder.ApplyConfiguration(new WarriorsFactionConfiguration());
             modelBuilder.ApplyConfiguration(new MarquiseFactionConfiguration());
             modelBuilder.ApplyConfiguration(new EyrieFactionConfiguration());
             modelBuilder.ApplyConfiguration(new AllianceFactionConfiguration());
@@ -59,6 +62,11 @@ namespace TheRoot.Infrastructure
             modelBuilder.ApplyConfiguration(new ClearingConfiguration());
             modelBuilder.ApplyConfiguration(new CraftingPieceConfiguration());
             modelBuilder.ApplyConfiguration(new RuinConfiguration());
+            modelBuilder.ApplyConfiguration(new WarriorsAgregateConfiguration());
+            modelBuilder.ApplyConfiguration(new TokensAgregateConfiguration());
+            modelBuilder.ApplyConfiguration(new BuildingsAgregateConfiguration());
+            modelBuilder.ApplyConfiguration(new CardsAgregateConfiguration());
+            modelBuilder.ApplyConfiguration(new ItemsAgregateConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
@@ -80,8 +88,9 @@ namespace TheRoot.Infrastructure
         public void Configure(EntityTypeBuilder<Ruin> builder)
         {
             builder.ToTable("Ruins");
-            builder.HasMany(x => x.RuinItems)
+            builder.HasOne(x => x.RuinItemsAgregate)
                 .WithOne()
+                .HasForeignKey<Ruin>("RuinItemsAgregateId")
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
@@ -112,16 +121,17 @@ namespace TheRoot.Infrastructure
         public void Configure(EntityTypeBuilder<Game> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.HasMany(x => x.Deck)
+            builder.HasOne(x => x.DeckCardsAgregate)
                 .WithOne()
-                .HasConstraintName("FK_Game_Deck_GameId")
+                .HasForeignKey<Game>("DeckCardsAgregateId")
                 .OnDelete(DeleteBehavior.NoAction);
-            builder.HasMany(x => x.Discard)
+            builder.HasOne(x => x.DiscardCardsAgregate)
                 .WithOne()
-                .HasConstraintName("FK_Game_Discard_GameId")
+                .HasForeignKey<Game>("DiscardCardsAgregateId")
                 .OnDelete(DeleteBehavior.NoAction);
-            builder.HasMany(x => x.CraftableItems)
+            builder.HasOne(x => x.CraftableItemsAgregate)
                 .WithOne()
+                .HasForeignKey<Game>("CraftableItemsAgregateId")
                 .OnDelete(DeleteBehavior.NoAction);
             builder.HasMany(x => x.Factions)
                 .WithOne()
@@ -137,22 +147,68 @@ namespace TheRoot.Infrastructure
             builder.HasOne(x => x.FactionType)
                 .WithMany()
                 .OnDelete(DeleteBehavior.NoAction);
-            builder.HasMany(x => x.Cards)
+            builder.HasOne(x => x.FactionCardsAgregate)
                 .WithOne()
+                .HasForeignKey<Faction>("FactionCardsAgregateId")
                 .OnDelete(DeleteBehavior.NoAction);
-            builder.HasMany(x => x.Items)
+            builder.HasOne(x => x.FactionItemsAgregate)
                 .WithOne()
+                .HasForeignKey<Faction>("FactionItemsAgregateId")
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
-    
-    public class WarriorsFactionConfiguration : IEntityTypeConfiguration<WarriorsFaction>
+
+    public class WarriorsAgregateConfiguration : IEntityTypeConfiguration<WarriorsAgregate>
     {
-        public void Configure(EntityTypeBuilder<WarriorsFaction> builder)
+        public void Configure(EntityTypeBuilder<WarriorsAgregate> builder)
         {
-            builder.ToTable("WarriorsFactions");
+            builder.HasKey(x => x.Id);
             builder.HasMany(x => x.Warriors)
-                .WithOne()
+                .WithOne(x => x.WarriorsAgregate)
+                .OnDelete(DeleteBehavior.NoAction);
+        }
+    }
+
+    public class TokensAgregateConfiguration : IEntityTypeConfiguration<TokensAgregate>
+    {
+        public void Configure(EntityTypeBuilder<TokensAgregate> builder)
+        {
+            builder.HasKey(x => x.Id);
+            builder.HasMany(x => x.Tokens)
+                .WithOne(x => x.TokensAgregate)
+                .OnDelete(DeleteBehavior.NoAction);
+        }
+    }
+
+    public class BuildingsAgregateConfiguration : IEntityTypeConfiguration<BuildingsAgregate>
+    {
+        public void Configure(EntityTypeBuilder<BuildingsAgregate> builder)
+        {
+            builder.HasKey(x => x.Id);
+            builder.HasMany(x => x.Buildings)
+                .WithOne(x => x.BuildingsAgregate)
+                .OnDelete(DeleteBehavior.NoAction);
+        }
+    }
+
+    public class CardsAgregateConfiguration : IEntityTypeConfiguration<CardsAgregate>
+    {
+        public void Configure(EntityTypeBuilder<CardsAgregate> builder)
+        {
+            builder.HasKey(x => x.Id);
+            builder.HasMany(x => x.Cards)
+                .WithOne(x => x.CardsAgregate)
+                .OnDelete(DeleteBehavior.NoAction);
+        }
+    }
+
+    public class ItemsAgregateConfiguration : IEntityTypeConfiguration<ItemsAgregate>
+    {
+        public void Configure(EntityTypeBuilder<ItemsAgregate> builder)
+        {
+            builder.HasKey(x => x.Id);
+            builder.HasMany(x => x.Items)
+                .WithOne(x => x.ItemsAgregate)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
@@ -162,11 +218,17 @@ namespace TheRoot.Infrastructure
         public void Configure(EntityTypeBuilder<MarquiseFaction> builder)
         {
             builder.ToTable("MarquiseFactions");
-            builder.HasMany(x => x.Tokens)
+            builder.HasOne(x => x.TokensAgregate)
                 .WithOne()
+                .HasForeignKey<MarquiseFaction>("MarquiseTokensAgregateId")
                 .OnDelete(DeleteBehavior.NoAction);
-            builder.HasMany(x => x.Buildings)
+            builder.HasOne(x => x.BuildingsAgregate)
                 .WithOne()
+                .HasForeignKey<MarquiseFaction>("MarquiseBuildingsAgregateId")
+                .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x => x.WarriorsAgregate)
+                .WithOne()
+                .HasForeignKey<MarquiseFaction>("MarquiseWarriorsAgregateId")
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
@@ -176,8 +238,13 @@ namespace TheRoot.Infrastructure
         public void Configure(EntityTypeBuilder<EyrieFaction> builder)
         {
             builder.ToTable("EyrieFactions");
-            builder.HasMany(x => x.Buildings)
+            builder.HasOne(x => x.BuildingsAgregate)
+               .WithOne()
+               .HasForeignKey<EyrieFaction>("EyrieBuildingsAgregateId")
+               .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x => x.WarriorsAgregate)
                 .WithOne()
+                .HasForeignKey<EyrieFaction>("EyrieWarriorsAgregateId")
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
@@ -187,17 +254,25 @@ namespace TheRoot.Infrastructure
         public void Configure(EntityTypeBuilder<AllianceFaction> builder)
         {
             builder.ToTable("AllianceFactions");
-            builder.HasMany(x => x.Tokens)
+            builder.HasOne(x => x.TokensAgregate)
+               .WithOne()
+               .HasForeignKey<AllianceFaction>("AllianceTokensAgregateId")
+               .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x => x.BuildingsAgregate)
+               .WithOne()
+               .HasForeignKey<AllianceFaction>("AllianceBuildingsAgregateId")
+               .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x => x.WarriorsAgregate)
                 .WithOne()
+                .HasForeignKey<AllianceFaction>("AllianceWarriorsAgregateId")
                 .OnDelete(DeleteBehavior.NoAction);
-            builder.HasMany(x => x.Buildings)
+            builder.HasOne(x => x.OfficersAgregate)
                 .WithOne()
+                .HasForeignKey<AllianceFaction>("AllianceOfficersAgregateId")
                 .OnDelete(DeleteBehavior.NoAction);
-            builder.HasMany(x => x.Officers)
+            builder.HasOne(x => x.SupportCardsAgregate)
                 .WithOne()
-                .OnDelete(DeleteBehavior.NoAction);
-            builder.HasMany(x => x.Support)
-                .WithOne()
+                .HasForeignKey<AllianceFaction>("SupportCardsAgregateId")
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
@@ -230,14 +305,17 @@ namespace TheRoot.Infrastructure
             builder.HasOne(x => x.ClearingType)
                 .WithMany()
                 .OnDelete(DeleteBehavior.NoAction);
-            builder.HasMany(x => x.ClearingWarriors)
+            builder.HasOne(x => x.TokensAgregate)
+               .WithOne()
+               .HasForeignKey<Clearing>("ClearingTokensAgregateId")
+               .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x => x.BuildingsAgregate)
+               .WithOne()
+               .HasForeignKey<Clearing>("ClearingBuildingsAgregateId")
+               .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x => x.WarriorsAgregate)
                 .WithOne()
-                .OnDelete(DeleteBehavior.NoAction);
-            builder.HasMany(x => x.ClearingTokens)
-                .WithOne()
-                .OnDelete(DeleteBehavior.NoAction);
-            builder.HasMany(x => x.Buildings)
-                .WithOne()
+                .HasForeignKey<Clearing>("ClearingWarriorsAgregateId")
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

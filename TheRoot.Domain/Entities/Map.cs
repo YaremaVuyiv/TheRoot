@@ -12,14 +12,11 @@ public record Clearing : BaseEntity
 
     public ClearingType ClearingType { get; init; }
 
-    private List<Warrior> _clearingWarriors;
-    public IReadOnlyCollection<Warrior> ClearingWarriors => _clearingWarriors;
+    public WarriorsAgregate WarriorsAgregate { get; init; }
 
-    private List<Token> _clearingTokens;
-    public IReadOnlyCollection<Token> ClearingTokens => _clearingTokens;
+    public TokensAgregate TokensAgregate { get; init; }
 
-    private List<Building> _clearingSlots;
-    public IReadOnlyCollection<Building> Buildings => _clearingSlots;
+    public BuildingsAgregate BuildingsAgregate { get; init; }
 
     public int MaxNumberOfBuildings { get; init; }
 
@@ -309,6 +306,17 @@ public enum CardType
     TaxCollector
 }
 
+public record Item : BaseEntity
+{
+    public Item(int id) : base(id)
+    {
+    }
+
+    public ItemType ItemType { get; init; }
+
+    public ItemsAgregate ItemsAgregate { get; init; }
+}
+
 public record Forest : BaseEntity
 {
     public Forest(
@@ -327,6 +335,8 @@ public record Card : BaseEntity
 
     public CardType CardType { get; init; }
 
+    public CardsAgregate CardsAgregate { get; init; }
+
     public virtual ICollection<CostType> Cost { get; init; }
 }
 
@@ -340,6 +350,8 @@ public record Warrior : BaseEntity
     }
 
     public FactionType FactionType { get; init; }
+
+    public WarriorsAgregate WarriorsAgregate { get; init; }
 }
 
 public record Building : BaseEntity
@@ -349,6 +361,8 @@ public record Building : BaseEntity
     }
 
     public BuildingType SlotPiece { get; set; }
+
+    public BuildingsAgregate BuildingsAgregate { get; set; }
 
     public FactionType? Faction =>
         SlotPiece switch
@@ -368,7 +382,7 @@ public record Ruin : Building
     {
     }
 
-    public ICollection<ItemType> RuinItems { get; init; }
+    public ItemsAgregate RuinItemsAgregate { get; init; }
 }
 
 public record Token : BaseEntity
@@ -378,6 +392,8 @@ public record Token : BaseEntity
     }
 
     public TokenType TokenType { get; init; }
+
+    public TokensAgregate TokensAgregate { get; init; }
 
     public FactionType Faction =>
         TokenType switch
@@ -396,31 +412,24 @@ public record Faction : BaseEntity
 
     public FactionType FactionType { get; set; }
 
-    public ICollection<Card> Cards { get; set; }
+    public CardsAgregate FactionCardsAgregate { get; set; }
 
     public ICollection<CraftingPiece> CraftingPieces { get; set; }
 
-    public ICollection<ItemType> Items { get; set; }
+    public ItemsAgregate FactionItemsAgregate { get; init; }
 }
 
-public record WarriorsFaction : Faction
-{
-    public WarriorsFaction(int id) : base(id)
-    {
-    }
-
-    public ICollection<Warrior> Warriors { get; set; }
-}
-
-public record MarquiseFaction : WarriorsFaction
+public record MarquiseFaction : Faction
 {
     public MarquiseFaction(int id) : base(id)
     {
     }
 
-    public ICollection<Token> Tokens { get; set; }
+    public WarriorsAgregate WarriorsAgregate { get; init; }
 
-    public ICollection<Building> Buildings { get; set; }
+    public TokensAgregate TokensAgregate { get; init; }
+
+    public BuildingsAgregate BuildingsAgregate { get; set; }
 }
 
 public record EyrieFaction : Faction
@@ -429,7 +438,9 @@ public record EyrieFaction : Faction
     {
     }
 
-    public ICollection<Building> Buildings { get; set; }
+    public WarriorsAgregate WarriorsAgregate { get; init; }
+
+    public BuildingsAgregate BuildingsAgregate { get; set; }
 }
 
 public record AllianceFaction : Faction
@@ -438,13 +449,15 @@ public record AllianceFaction : Faction
     {
     }
 
-    public ICollection<Token> Tokens { get; set; }
+    public TokensAgregate TokensAgregate { get; init; }
 
-    public ICollection<Building> Buildings { get; set; }
+    public BuildingsAgregate BuildingsAgregate { get; set; }
 
-    public ICollection<Warrior> Officers { get; set; }
+    public WarriorsAgregate WarriorsAgregate { get; init; }
 
-    public ICollection<Card> Support { get; set; }
+    public WarriorsAgregate OfficersAgregate { get; init; }
+
+    public CardsAgregate SupportCardsAgregate { get; set; }
 
     public int UsedOfficers { get; set; }
 }
@@ -466,11 +479,56 @@ public record Game : BaseEntity
     {
     }
 
-    public ICollection<Card> Deck { get; set; }
+    public CardsAgregate DeckCardsAgregate { get; set; }
 
-    public ICollection<Card> Discard { get; set; }
+    public CardsAgregate DiscardCardsAgregate { get; set; }
 
-    public ICollection<ItemType> CraftableItems { get; set; }
+    public ItemsAgregate CraftableItemsAgregate { get; init; }
 
     public ICollection<Faction> Factions { get; set; }
+}
+
+public record WarriorsAgregate : BaseEntity
+{
+    public WarriorsAgregate(int id) : base(id)
+    {
+    }
+
+    public ICollection<Warrior> Warriors { get; init; }
+}
+
+public record TokensAgregate : BaseEntity
+{
+    public TokensAgregate(int id) : base(id)
+    {
+    }
+
+    public ICollection<Token> Tokens { get; init; }
+}
+
+public record BuildingsAgregate : BaseEntity
+{
+    public BuildingsAgregate(int id) : base(id)
+    {
+    }
+
+    public ICollection<Building> Buildings { get; init; }
+}
+
+public record CardsAgregate : BaseEntity
+{
+    public CardsAgregate(int id) : base(id)
+    {
+    }
+
+    public ICollection<Card> Cards { get; init; }
+}
+
+public record ItemsAgregate : BaseEntity
+{
+    public ItemsAgregate(int id) : base(id)
+    {
+    }
+
+    public ICollection<Item> Items { get; init; }
 }
