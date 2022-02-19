@@ -27,11 +27,11 @@ namespace TheRoot.Infrastructure
         public DbSet<Game> Games { get; set; }
         public DbSet<CraftingPiece> CraftingPieces {get;set;}
         public DbSet<Ruin> Ruins { get; set; }
-        public DbSet<WarriorsAgregate> WarriorsAgregates { get; set; }
-        public DbSet<TokensAgregate> TokensAgregates { get; set; }
-        public DbSet<BuildingsAgregate> BuildingsAgregates { get; set; }
-        public DbSet<CardsAgregate> CardsAgregates { get; set; }
-        public DbSet<ItemsAgregate> ItemsAgregates { get; set; }
+        public DbSet<Agregate<Warrior>> WarriorsAgregates { get; set; }
+        public DbSet<Agregate<Token>> TokensAgregates { get; set; }
+        public DbSet<Agregate<Building>> BuildingsAgregates { get; set; }
+        public DbSet<Agregate<Card>> CardsAgregates { get; set; }
+        public DbSet<Agregate<Item>> ItemsAgregates { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -62,11 +62,11 @@ namespace TheRoot.Infrastructure
             modelBuilder.ApplyConfiguration(new ClearingConfiguration());
             modelBuilder.ApplyConfiguration(new CraftingPieceConfiguration());
             modelBuilder.ApplyConfiguration(new RuinConfiguration());
-            modelBuilder.ApplyConfiguration(new WarriorsAgregateConfiguration());
-            modelBuilder.ApplyConfiguration(new TokensAgregateConfiguration());
-            modelBuilder.ApplyConfiguration(new BuildingsAgregateConfiguration());
-            modelBuilder.ApplyConfiguration(new CardsAgregateConfiguration());
-            modelBuilder.ApplyConfiguration(new ItemsAgregateConfiguration());
+            modelBuilder.ApplyConfiguration(new AgregateConfiguration<Warrior>());
+            modelBuilder.ApplyConfiguration(new AgregateConfiguration<Token>());
+            modelBuilder.ApplyConfiguration(new AgregateConfiguration<Building>());
+            modelBuilder.ApplyConfiguration(new AgregateConfiguration<Card>());
+            modelBuilder.ApplyConfiguration(new AgregateConfiguration<Item>());
 
             base.OnModelCreating(modelBuilder);
         }
@@ -173,56 +173,12 @@ namespace TheRoot.Infrastructure
         }
     }
 
-    public class WarriorsAgregateConfiguration : IEntityTypeConfiguration<WarriorsAgregate>
+    public class AgregateConfiguration<T> : IEntityTypeConfiguration<Agregate<T>> where T : BaseEntity
     {
-        public void Configure(EntityTypeBuilder<WarriorsAgregate> builder)
+        public void Configure(EntityTypeBuilder<Agregate<T>> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.HasMany(x => x.Warriors)
-                .WithOne()
-                .OnDelete(DeleteBehavior.NoAction);
-        }
-    }
-
-    public class TokensAgregateConfiguration : IEntityTypeConfiguration<TokensAgregate>
-    {
-        public void Configure(EntityTypeBuilder<TokensAgregate> builder)
-        {
-            builder.HasKey(x => x.Id);
-            builder.HasMany(x => x.Tokens)
-                .WithOne()
-                .OnDelete(DeleteBehavior.NoAction);
-        }
-    }
-
-    public class BuildingsAgregateConfiguration : IEntityTypeConfiguration<BuildingsAgregate>
-    {
-        public void Configure(EntityTypeBuilder<BuildingsAgregate> builder)
-        {
-            builder.HasKey(x => x.Id);
-            builder.HasMany(x => x.Buildings)
-                .WithOne()
-                .OnDelete(DeleteBehavior.NoAction);
-        }
-    }
-
-    public class CardsAgregateConfiguration : IEntityTypeConfiguration<CardsAgregate>
-    {
-        public void Configure(EntityTypeBuilder<CardsAgregate> builder)
-        {
-            builder.HasKey(x => x.Id);
-            builder.HasMany(x => x.Cards)
-                .WithOne()
-                .OnDelete(DeleteBehavior.NoAction);
-        }
-    }
-
-    public class ItemsAgregateConfiguration : IEntityTypeConfiguration<ItemsAgregate>
-    {
-        public void Configure(EntityTypeBuilder<ItemsAgregate> builder)
-        {
-            builder.HasKey(x => x.Id);
-            builder.HasMany(x => x.Items)
+            builder.HasMany(x => x.AgregateItems)
                 .WithOne()
                 .OnDelete(DeleteBehavior.NoAction);
         }

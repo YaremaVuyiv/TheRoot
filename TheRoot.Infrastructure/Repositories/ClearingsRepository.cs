@@ -53,7 +53,7 @@ public class ClearingsRepository : IClearingsRepository
     public Task<List<int>> GetClearingIdsWithTokensAsync(TokenType tokenType)
     {
         var result = StateContainer.Clearings
-            .Where(x => x.TokensAgregate.Tokens.Any(z => z.TokenType == tokenType))
+            .Where(x => x.TokensAgregate.AgregateItems.Any(z => z.TokenType == tokenType))
             .Select(x => x.Id)
             .ToList();
 
@@ -63,7 +63,7 @@ public class ClearingsRepository : IClearingsRepository
     public Task<List<int>> GetClearingIdsWithWarriorsAsync(FactionType faction)
     {
         var result = StateContainer.Clearings
-            .Where(x => x.WarriorsAgregate.Warriors.Any(z => z.FactionType == faction))
+            .Where(x => x.WarriorsAgregate.AgregateItems.Any(z => z.FactionType == faction))
             .Select(x => x.Id)
             .ToList();
 
@@ -75,7 +75,7 @@ public class ClearingsRepository : IClearingsRepository
         var result = StateContainer.Clearings
             .First(x => x.Id == clearingId)
             .TokensAgregate
-            .Tokens
+            .AgregateItems
             .GroupBy(x => x.TokenType)
             .ToDictionary(x => x.Key, x => x.Count());
 
@@ -87,7 +87,7 @@ public class ClearingsRepository : IClearingsRepository
         var result = StateContainer.Clearings
             .First(x => x.Id == clearingId)
             .BuildingsAgregate
-            .Buildings
+            .AgregateItems
             .Select(x => (BuildingType?)x.SlotPiece)
             .ToList();
 
@@ -99,7 +99,7 @@ public class ClearingsRepository : IClearingsRepository
         var result = StateContainer.Clearings
             .First(x => x.Id == clearingId)
             .BuildingsAgregate
-            .Buildings
+            .AgregateItems
             .ToList();
 
         return Task.FromResult(result);
@@ -110,7 +110,7 @@ public class ClearingsRepository : IClearingsRepository
         var result = StateContainer.Clearings
             .First(x => x.Id == clearingId)
             .WarriorsAgregate
-            .Warriors
+            .AgregateItems
             .GroupBy(x => x.FactionType)
             .ToDictionary(x => x.Key, x => x.Count());
 

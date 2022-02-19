@@ -12,11 +12,11 @@ public record Clearing : BaseEntity
 
     public ClearingType ClearingType { get; init; }
 
-    public WarriorsAgregate WarriorsAgregate { get; init; }
+    public Agregate<Warrior> WarriorsAgregate { get; init; }
 
-    public TokensAgregate TokensAgregate { get; init; }
+    public Agregate<Token> TokensAgregate { get; init; }
 
-    public BuildingsAgregate BuildingsAgregate { get; init; }
+    public Agregate<Building> BuildingsAgregate { get; init; }
 
     public int MaxNumberOfBuildings { get; init; }
 
@@ -374,7 +374,7 @@ public record Ruin : Building
     {
     }
 
-    public ItemsAgregate RuinItemsAgregate { get; init; }
+    public Agregate<Item> RuinItemsAgregate { get; init; }
 }
 
 public record Token : BaseEntity
@@ -402,11 +402,11 @@ public record Faction : BaseEntity
 
     public FactionType FactionType { get; set; }
 
-    public CardsAgregate FactionCardsAgregate { get; set; }
+    public Agregate<Card> FactionCardsAgregate { get; set; }
 
     public ICollection<CraftingPiece> CraftingPieces { get; set; }
 
-    public ItemsAgregate FactionItemsAgregate { get; init; }
+    public Agregate<Item> FactionItemsAgregate { get; init; }
 }
 
 public record MarquiseFaction : Faction
@@ -415,11 +415,11 @@ public record MarquiseFaction : Faction
     {
     }
 
-    public WarriorsAgregate WarriorsAgregate { get; init; }
+    public Agregate<Warrior> WarriorsAgregate { get; init; }
 
-    public TokensAgregate TokensAgregate { get; init; }
+    public Agregate<Token> TokensAgregate { get; init; }
 
-    public BuildingsAgregate BuildingsAgregate { get; set; }
+    public Agregate<Building> BuildingsAgregate { get; set; }
 }
 
 public record EyrieFaction : Faction
@@ -428,9 +428,9 @@ public record EyrieFaction : Faction
     {
     }
 
-    public WarriorsAgregate WarriorsAgregate { get; init; }
+    public Agregate<Warrior> WarriorsAgregate { get; init; }
 
-    public BuildingsAgregate BuildingsAgregate { get; set; }
+    public Agregate<Building> BuildingsAgregate { get; set; }
 }
 
 public record AllianceFaction : Faction
@@ -439,15 +439,15 @@ public record AllianceFaction : Faction
     {
     }
 
-    public TokensAgregate TokensAgregate { get; init; }
+    public Agregate<Token> TokensAgregate { get; init; }
 
-    public BuildingsAgregate BuildingsAgregate { get; set; }
+    public Agregate<Building> BuildingsAgregate { get; set; }
 
-    public WarriorsAgregate WarriorsAgregate { get; init; }
+    public Agregate<Warrior> WarriorsAgregate { get; init; }
 
-    public WarriorsAgregate OfficersAgregate { get; init; }
+    public Agregate<Warrior> OfficersAgregate { get; init; }
 
-    public CardsAgregate SupportCardsAgregate { get; set; }
+    public Agregate<Card> SupportCardsAgregate { get; set; }
 
     public int UsedOfficers { get; set; }
 }
@@ -469,66 +469,65 @@ public record Game : BaseEntity
     {
     }
 
-    public CardsAgregate DeckCardsAgregate { get; set; }
+    private List<Clearing> _clearings;
+    private List<Forest> _forests;
+    private List<ClearingsPath> _clearingsPaths;
+    private List<ClearingsRiverPath> _clearingsRiverPaths;
+    private List<ClearingForestPath> _clearingForestPaths;
 
-    public CardsAgregate DiscardCardsAgregate { get; set; }
+    public Agregate<Card> DeckCardsAgregate { get; init; }
 
-    public ItemsAgregate CraftableItemsAgregate { get; init; }
+    public Agregate<Card> DiscardCardsAgregate { get; init; }
 
-    public ICollection<Clearing> Clearings { get; init; }
+    public Agregate<Item> CraftableItemsAgregate { get; init; }
 
-    public ICollection<Forest> Forests { get; init; }
+    public IReadOnlyCollection<Clearing> Clearings => _clearings;
 
-    public ICollection<ClearingsPath> ClearingsPaths { get; init; }
+    public IReadOnlyCollection<Forest> Forests => _forests;
 
-    public ICollection<ClearingsRiverPath> ClearingsRiverPaths { get; init; }
+    public IReadOnlyCollection<ClearingsPath> ClearingsPaths => _clearingsPaths;
 
-    public ICollection<ClearingForestPath> ClearingForestPaths { get; init; }
+    public IReadOnlyCollection<ClearingsRiverPath> ClearingsRiverPaths => _clearingsRiverPaths;
+
+    public IReadOnlyCollection<ClearingForestPath> ClearingForestPaths => _clearingForestPaths;
 
     public ICollection<Faction> Factions { get; set; }
 }
 
-public record WarriorsAgregate : BaseEntity
+public record Agregate<T> : BaseEntity where T : BaseEntity
 {
-    public WarriorsAgregate(int id) : base(id)
+    public Agregate(int id) : base(id)
     {
+        _agregateItems = new List<T>();
     }
 
-    public ICollection<Warrior> Warriors { get; init; }
-}
+    private List<T> _agregateItems;
 
-public record TokensAgregate : BaseEntity
-{
-    public TokensAgregate(int id) : base(id)
+    public IReadOnlyCollection<T> AgregateItems => _agregateItems;
+
+    public void AddAgregateItem(T agregateItem)
     {
+        if (agregateItem == null)
+        {
+            throw new ArgumentException("warrior is null");
+        }
+
+        if (_agregateItems.Any(x => x.Id == agregateItem.Id))
+        {
+            throw new ArgumentException($"warrior with Id:{agregateItem.Id} already exists");
+        }
+
+        _agregateItems.Add(agregateItem);
     }
 
-    public ICollection<Token> Tokens { get; init; }
-}
-
-public record BuildingsAgregate : BaseEntity
-{
-    public BuildingsAgregate(int id) : base(id)
+    public void RemoveAgregateItem(int agregateItemId)
     {
+        var index = _agregateItems.FindIndex(x => x.Id == agregateItemId);
+        if (index < 0)
+        {
+            throw new ArgumentException("Invalid");
+        }
+
+        _agregateItems.RemoveAt(index);
     }
-
-    public ICollection<Building> Buildings { get; init; }
-}
-
-public record CardsAgregate : BaseEntity
-{
-    public CardsAgregate(int id) : base(id)
-    {
-    }
-
-    public ICollection<Card> Cards { get; init; }
-}
-
-public record ItemsAgregate : BaseEntity
-{
-    public ItemsAgregate(int id) : base(id)
-    {
-    }
-
-    public ICollection<Item> Items { get; init; }
 }
