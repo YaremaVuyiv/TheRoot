@@ -136,6 +136,21 @@ namespace TheRoot.Infrastructure
             builder.HasMany(x => x.Factions)
                 .WithOne()
                 .OnDelete(DeleteBehavior.NoAction);
+            builder.HasMany(x => x.Clearings)
+                .WithOne()
+                .OnDelete(DeleteBehavior.NoAction);
+            builder.HasMany(x => x.Forests)
+                .WithOne()
+                .OnDelete(DeleteBehavior.NoAction);
+            builder.HasMany(x => x.ClearingsPaths)
+                .WithOne()
+                .OnDelete(DeleteBehavior.NoAction);
+            builder.HasMany(x => x.ClearingsRiverPaths)
+                .WithOne()
+                .OnDelete(DeleteBehavior.NoAction);
+            builder.HasMany(x => x.ClearingForestPaths)
+                .WithOne()
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 
@@ -164,7 +179,7 @@ namespace TheRoot.Infrastructure
         {
             builder.HasKey(x => x.Id);
             builder.HasMany(x => x.Warriors)
-                .WithOne(x => x.WarriorsAgregate)
+                .WithOne()
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
@@ -175,7 +190,7 @@ namespace TheRoot.Infrastructure
         {
             builder.HasKey(x => x.Id);
             builder.HasMany(x => x.Tokens)
-                .WithOne(x => x.TokensAgregate)
+                .WithOne()
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
@@ -186,7 +201,7 @@ namespace TheRoot.Infrastructure
         {
             builder.HasKey(x => x.Id);
             builder.HasMany(x => x.Buildings)
-                .WithOne(x => x.BuildingsAgregate)
+                .WithOne()
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
@@ -197,7 +212,7 @@ namespace TheRoot.Infrastructure
         {
             builder.HasKey(x => x.Id);
             builder.HasMany(x => x.Cards)
-                .WithOne(x => x.CardsAgregate)
+                .WithOne()
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
@@ -208,7 +223,7 @@ namespace TheRoot.Infrastructure
         {
             builder.HasKey(x => x.Id);
             builder.HasMany(x => x.Items)
-                .WithOne(x => x.ItemsAgregate)
+                .WithOne()
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

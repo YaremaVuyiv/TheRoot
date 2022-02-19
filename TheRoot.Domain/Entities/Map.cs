@@ -313,8 +313,6 @@ public record Item : BaseEntity
     }
 
     public ItemType ItemType { get; init; }
-
-    public ItemsAgregate ItemsAgregate { get; init; }
 }
 
 public record Forest : BaseEntity
@@ -335,8 +333,6 @@ public record Card : BaseEntity
 
     public CardType CardType { get; init; }
 
-    public CardsAgregate CardsAgregate { get; init; }
-
     public virtual ICollection<CostType> Cost { get; init; }
 }
 
@@ -350,8 +346,6 @@ public record Warrior : BaseEntity
     }
 
     public FactionType FactionType { get; init; }
-
-    public WarriorsAgregate WarriorsAgregate { get; init; }
 }
 
 public record Building : BaseEntity
@@ -361,8 +355,6 @@ public record Building : BaseEntity
     }
 
     public BuildingType SlotPiece { get; set; }
-
-    public BuildingsAgregate BuildingsAgregate { get; set; }
 
     public FactionType? Faction =>
         SlotPiece switch
@@ -392,8 +384,6 @@ public record Token : BaseEntity
     }
 
     public TokenType TokenType { get; init; }
-
-    public TokensAgregate TokensAgregate { get; init; }
 
     public FactionType Faction =>
         TokenType switch
@@ -484,6 +474,16 @@ public record Game : BaseEntity
     public CardsAgregate DiscardCardsAgregate { get; set; }
 
     public ItemsAgregate CraftableItemsAgregate { get; init; }
+
+    public ICollection<Clearing> Clearings { get; init; }
+
+    public ICollection<Forest> Forests { get; init; }
+
+    public ICollection<ClearingsPath> ClearingsPaths { get; init; }
+
+    public ICollection<ClearingsRiverPath> ClearingsRiverPaths { get; init; }
+
+    public ICollection<ClearingForestPath> ClearingForestPaths { get; init; }
 
     public ICollection<Faction> Factions { get; set; }
 }
