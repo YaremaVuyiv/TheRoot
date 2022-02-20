@@ -12,11 +12,11 @@ public record Clearing : BaseEntity
 
     public ClearingType ClearingType { get; init; }
 
-    public Agregate<Warrior> WarriorsAgregate { get; init; }
+    public PiecesContainer<Warrior> WarriorsContainer { get; init; }
 
-    public Agregate<Token> TokensAgregate { get; init; }
+    public PiecesContainer<Token> TokensContainer { get; init; }
 
-    public Agregate<Building> BuildingsAgregate { get; init; }
+    public PiecesContainer<Building> BuildingsContainer { get; init; }
 
     public int MaxNumberOfBuildings { get; init; }
 
@@ -374,7 +374,7 @@ public record Ruin : Building
     {
     }
 
-    public Agregate<Item> RuinItemsAgregate { get; init; }
+    public PiecesContainer<Item> RuinItemsContainer { get; init; }
 }
 
 public record Token : BaseEntity
@@ -402,11 +402,11 @@ public record Faction : BaseEntity
 
     public FactionType FactionType { get; set; }
 
-    public Agregate<Card> FactionCardsAgregate { get; set; }
+    public PiecesContainer<Card> FactionCardsContainer { get; set; }
 
     public ICollection<CraftingPiece> CraftingPieces { get; set; }
 
-    public Agregate<Item> FactionItemsAgregate { get; init; }
+    public PiecesContainer<Item> FactionItemsContainer { get; init; }
 }
 
 public record MarquiseFaction : Faction
@@ -415,11 +415,11 @@ public record MarquiseFaction : Faction
     {
     }
 
-    public Agregate<Warrior> WarriorsAgregate { get; init; }
+    public PiecesContainer<Warrior> WarriorsContainer { get; init; }
 
-    public Agregate<Token> TokensAgregate { get; init; }
+    public PiecesContainer<Token> TokensContainer { get; init; }
 
-    public Agregate<Building> BuildingsAgregate { get; set; }
+    public PiecesContainer<Building> BuildingsContainer { get; set; }
 }
 
 public record EyrieFaction : Faction
@@ -428,9 +428,9 @@ public record EyrieFaction : Faction
     {
     }
 
-    public Agregate<Warrior> WarriorsAgregate { get; init; }
+    public PiecesContainer<Warrior> WarriorsContainer { get; init; }
 
-    public Agregate<Building> BuildingsAgregate { get; set; }
+    public PiecesContainer<Building> BuildingsContainer { get; set; }
 }
 
 public record AllianceFaction : Faction
@@ -439,15 +439,15 @@ public record AllianceFaction : Faction
     {
     }
 
-    public Agregate<Token> TokensAgregate { get; init; }
+    public PiecesContainer<Token> TokensContainer { get; init; }
 
-    public Agregate<Building> BuildingsAgregate { get; set; }
+    public PiecesContainer<Building> BuildingsContainer { get; set; }
 
-    public Agregate<Warrior> WarriorsAgregate { get; init; }
+    public PiecesContainer<Warrior> WarriorsContainer { get; init; }
 
-    public Agregate<Warrior> OfficersAgregate { get; init; }
+    public PiecesContainer<Warrior> OfficersContainer { get; init; }
 
-    public Agregate<Card> SupportCardsAgregate { get; set; }
+    public PiecesContainer<Card> SupportCardsContainer { get; set; }
 
     public int UsedOfficers { get; set; }
 }
@@ -475,11 +475,11 @@ public record Game : BaseEntity
     private List<ClearingsRiverPath> _clearingsRiverPaths;
     private List<ClearingForestPath> _clearingForestPaths;
 
-    public Agregate<Card> DeckCardsAgregate { get; init; }
+    public PiecesContainer<Card> DeckCardsContainer { get; init; }
 
-    public Agregate<Card> DiscardCardsAgregate { get; init; }
+    public PiecesContainer<Card> DiscardCardsContainer { get; init; }
 
-    public Agregate<Item> CraftableItemsAgregate { get; init; }
+    public PiecesContainer<Item> CraftableItemsContainer { get; init; }
 
     public IReadOnlyCollection<Clearing> Clearings => _clearings;
 
@@ -494,40 +494,62 @@ public record Game : BaseEntity
     public ICollection<Faction> Factions { get; set; }
 }
 
-public record Agregate<T> : BaseEntity where T : BaseEntity
+public record PiecesContainer<T> : BaseEntity where T : BaseEntity
 {
-    public Agregate(int id) : base(id)
+    public PiecesContainer(int id) : base(id)
     {
-        _agregateItems = new List<T>();
+        _pieces = new List<T>();
     }
 
-    private List<T> _agregateItems;
+    private List<T> _pieces;
 
-    public IReadOnlyCollection<T> AgregateItems => _agregateItems;
+    public IReadOnlyCollection<T> Pieces => _pieces;
 
-    public void AddAgregateItem(T agregateItem)
+    public void AddPiece(T pieceToAdd)
     {
-        if (agregateItem == null)
+        if (pieceToAdd == null)
         {
-            throw new ArgumentException("warrior is null");
+            throw new ArgumentException("piece is null");
         }
 
-        if (_agregateItems.Any(x => x.Id == agregateItem.Id))
+        if (_pieces.Any(x => x.Id == pieceToAdd.Id))
         {
-            throw new ArgumentException($"warrior with Id:{agregateItem.Id} already exists");
+            throw new ArgumentException($"piece ${typeof(T)} with Id:{pieceToAdd.Id} already exists");
         }
 
-        _agregateItems.Add(agregateItem);
+        _pieces.Add(pieceToAdd);
     }
 
-    public void RemoveAgregateItem(int agregateItemId)
+    public void RemovePiece(int pieceId)
     {
-        var index = _agregateItems.FindIndex(x => x.Id == agregateItemId);
+        var index = _pieces.FindIndex(x => x.Id == pieceId);
         if (index < 0)
         {
-            throw new ArgumentException("Invalid");
+            throw new ArgumentException($"Piece {typeof(T)} with id {pieceId} doens't exist");
         }
 
-        _agregateItems.RemoveAt(index);
+        _pieces.RemoveAt(index);
+    }
+
+    public void AddPiecesRange(IEnumerable<T> pieces)
+    {
+        var intersection = pieces.Intersect(_pieces).ToList();
+        if (intersection.Count > 0)
+        {
+            throw new ArgumentException($"Piece {typeof(T)} with Id:{intersection.First().Id} already exists");
+        }
+
+        _pieces.AddRange(pieces);
+    }
+
+    public void RemovePiecesRange(IEnumerable<T> pieces)
+    {
+        var exception = pieces.Except(_pieces).ToList();
+        if (exception.Count > 0)
+        {
+            throw new ArgumentException($"Piece {typeof(T)} with Id:{exception.First().Id} is not possible to delete");
+        }
+
+        _pieces.RemoveAll(x => pieces.Any(i => i.Id == x.Id));
     }
 }
