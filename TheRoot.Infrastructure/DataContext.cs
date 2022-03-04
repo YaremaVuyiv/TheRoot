@@ -27,6 +27,7 @@ namespace TheRoot.Infrastructure
         public DbSet<Game> Games { get; set; }
         public DbSet<CraftingPiece> CraftingPieces {get;set;}
         public DbSet<Ruin> Ruins { get; set; }
+        public DbSet<AllianseBase> AllianseBases { get; set; }
         public DbSet<PiecesContainer<Warrior>> WarriorsContainers { get; set; }
         public DbSet<PiecesContainer<Token>> TokensContainers { get; set; }
         public DbSet<PiecesContainer<Building>> BuildingsContainers { get; set; }
@@ -67,8 +68,20 @@ namespace TheRoot.Infrastructure
             modelBuilder.ApplyConfiguration(new PiecesContainerConfiguration<Building>());
             modelBuilder.ApplyConfiguration(new PiecesContainerConfiguration<Card>());
             modelBuilder.ApplyConfiguration(new PiecesContainerConfiguration<Item>());
+            modelBuilder.ApplyConfiguration(new AllianseBaseConfiguration());
 
             base.OnModelCreating(modelBuilder);
+        }
+    }
+
+    public class AllianseBaseConfiguration : IEntityTypeConfiguration<AllianseBase>
+    {
+        public void Configure(EntityTypeBuilder<AllianseBase> builder)
+        {
+            builder.HasKey(x => x.Id);
+            builder.HasOne(x => x.ClearingType)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 

@@ -1,15 +1,13 @@
 ﻿namespace TheRoot.Domain.Entities;
 
 #region Immutable Entiries
-public abstract record BaseEntity(int Id);
+public abstract record BaseEntity 
+{
+    public int Id { get; init; }
+}
 
 public record Clearing : BaseEntity
 {
-    public Clearing(
-        int id) : base(id)
-    {
-    }
-
     public ClearingType ClearingType { get; init; }
 
     public PiecesContainer<Warrior> WarriorsContainer { get; init; }
@@ -19,154 +17,10 @@ public record Clearing : BaseEntity
     public PiecesContainer<Building> BuildingsContainer { get; init; }
 
     public int MaxNumberOfBuildings { get; init; }
-
-    /*public Dictionary<FactionType, int> GetFactionsPieces()
-    {
-        var dict = _clearingWarriors
-            .ToDictionary(x => x.FactionType, x => x.Count);
-
-        foreach (var slot in _clearingSlots)
-        {
-            if (!slot.Faction.HasValue)
-            {
-                continue;
-            }
-
-            if (dict.TryGetValue(slot.Faction.Value, out var count))
-            {
-                dict[slot.Faction.Value] += count;
-            }
-            else
-            {
-                dict[slot.Faction.Value] = count;
-            }
-        }
-
-        return dict;
-    }
-
-    public void CreateBuilding(BuildingType building)
-    {
-        var emptySlot = _clearingSlots.FirstOrDefault(x => x.SlotPiece == null);
-
-        if (emptySlot != null)
-        {
-            emptySlot.SlotPiece = building;
-        }
-        else
-        {
-            throw new ArgumentException($"No empty slot in clearing {Id}");
-        }
-    }
-
-    public void DestroyBuilding(BuildingType building)
-    {
-        var slot = _clearingSlots.FirstOrDefault(x => x.SlotPiece == building);
-
-        if (slot != null)
-        {
-            slot.SlotPiece = null;
-        }
-        else
-        {
-            throw new ArgumentException($"No {building} was found in clearing {Id}");
-        }
-    }
-
-    public void AddToken(TokenType token)
-    {
-        if (Tokens.ContainsKey(token))
-        {
-            throw new ArgumentException($"There is already {token} in  clearing {Id}");
-        }
-        else
-        {
-            Tokens.Add(token, 1);
-        }
-    }
-
-    public void RemoveToken(TokenType token)
-    {
-        if (Tokens.ContainsKey(token))
-        {
-            Tokens.Remove(token);
-        }
-        else
-        {
-            throw new ArgumentException($"There is no {token} in  clearing {Id}");
-        }
-    }
-
-    public void IncrementToken(TokenType token, int count)
-    {
-        if (Tokens.ContainsKey(token))
-        {
-            Tokens[token] += count;
-        }
-        else
-        {
-            throw new ArgumentException($"There is no {token} in  clearing {Id}");
-        }
-    }
-
-    public void DecrementToken(TokenType token, int count)
-    {
-        if (Tokens.ContainsKey(token))
-        {
-            if (Tokens[token] < count)
-            {
-                throw new ArgumentException($"There is {Tokens[token]} count of {token} in  clearing {Id}. But you try to remove {count}");
-            }
-            else if (Tokens[token] == count)
-            {
-                RemoveToken(token);
-            }
-            else
-            {
-                Tokens[token] -= count;
-            }
-        }
-        else
-        {
-            throw new ArgumentException($"There is no {token} in  clearing {Id}");
-        }
-    }
-
-    public void AddWarriors(FactionType faction, int count)
-    {
-        if (Warriors.TryGetValue(faction, out var warriorsCount))
-        {
-            Warriors[faction] = warriorsCount + count;
-        }
-        else
-        {
-            Warriors.Add(faction, count);
-        }
-    }
-
-    public void RemoveWarriors(FactionType faction, int count)
-    {
-        if (Warriors.TryGetValue(faction, out var warriorsCount))
-        {
-            Warriors[faction] = warriorsCount - count < 0 ?
-                throw new ArgumentException(
-                    $"Clearing {Id} has {warriorsCount} warriors, but {count} is attempted to remove") :
-                warriorsCount - count;
-        }
-        else
-        {
-            throw new ArgumentException($"No warriors of {faction} are in clearing {Id}");
-        }
-    }*/
 }
 
 public record ClearingsPath : BaseEntity
 {
-    public ClearingsPath(int id) : base(id)
-    {
-
-    }
-
     public Clearing FromClearing { get; init; }
 
     public Clearing ToClearing { get; init; }
@@ -174,11 +28,6 @@ public record ClearingsPath : BaseEntity
 
 public record ClearingsRiverPath : BaseEntity
 {
-    public ClearingsRiverPath(int id) : base(id)
-    {
-
-    }
-
     public Clearing FromClearing { get; init; }
 
     public Clearing ToClearing { get; init; }
@@ -186,11 +35,6 @@ public record ClearingsRiverPath : BaseEntity
 
 public record ClearingForestPath : BaseEntity
 {
-    public ClearingForestPath(int id) : base(id)
-    {
-
-    }
-
     public Clearing Clearing { get; init; }
 
     public Forest Forest { get; init; }
@@ -308,27 +152,15 @@ public enum CardType
 
 public record Item : BaseEntity
 {
-    public Item(int id) : base(id)
-    {
-    }
-
     public ItemType ItemType { get; init; }
 }
 
 public record Forest : BaseEntity
 {
-    public Forest(
-        int id) : base(id)
-    {
-    }
 }
 
 public record Card : BaseEntity
 {
-    public Card(int id) : base(id)
-    {
-    }
-
     public CardSuit CardSuit { get; init; }
 
     public CardType CardType { get; init; }
@@ -341,8 +173,9 @@ public record Card : BaseEntity
 /// </summary>
 public record Warrior : BaseEntity
 {
-    public Warrior(int id) : base(id)
+    public Warrior(FactionType faction)
     {
+        FactionType = faction;
     }
 
     public FactionType FactionType { get; init; }
@@ -350,8 +183,9 @@ public record Warrior : BaseEntity
 
 public record Building : BaseEntity
 {
-    public Building(int id) : base(id)
+    public Building(BuildingType buildingType)
     {
+        SlotPiece = buildingType;
     }
 
     public BuildingType SlotPiece { get; set; }
@@ -370,17 +204,29 @@ public record Building : BaseEntity
 
 public record Ruin : Building
 {
-    public Ruin(int id) : base(id)
+    public Ruin() : base(BuildingType.Ruin)
     {
+        RuinItemsContainer = new PiecesContainer<Item>();
     }
 
     public PiecesContainer<Item> RuinItemsContainer { get; init; }
 }
 
+public record AllianseBase : Building
+{
+    public AllianseBase(ClearingType clearingType) : base(BuildingType.AllianseBase)
+    {
+        ClearingType = clearingType;
+    }
+
+    public ClearingType ClearingType { get; init; }
+}
+
 public record Token : BaseEntity
 {
-    public Token(int id) : base(id)
+    public Token(TokenType tokenType)
     {
+        TokenType = tokenType;
     }
 
     public TokenType TokenType { get; init; }
@@ -394,25 +240,57 @@ public record Token : BaseEntity
         };
 }
 
-public record Faction : BaseEntity
+public abstract record Faction : BaseEntity
 {
-    public Faction(int id) : base(id)
+    private List<CraftingPiece> _craftingPieces;
+    private int _score;
+
+    protected Faction()
     {
+        _craftingPieces = new List<CraftingPiece>();
+        FactionCardsContainer = new PiecesContainer<Card>();
+        FactionItemsContainer = new PiecesContainer<Item>();
+        _score = 0;
     }
 
-    public FactionType FactionType { get; set; }
+    public Faction(FactionType factionType) : this()
+    {
+        FactionType = factionType;
+    }
 
-    public PiecesContainer<Card> FactionCardsContainer { get; set; }
+    public FactionType FactionType { get; init; }
 
-    public ICollection<CraftingPiece> CraftingPieces { get; set; }
+    public PiecesContainer<Card> FactionCardsContainer { get; init; }
+
+    public IEnumerable<CraftingPiece> CraftingPieces => _craftingPieces.AsReadOnly();
 
     public PiecesContainer<Item> FactionItemsContainer { get; init; }
+
+    public int Score => _score;
 }
 
 public record MarquiseFaction : Faction
 {
-    public MarquiseFaction(int id) : base(id)
+    protected MarquiseFaction() : base()
     {
+        WarriorsContainer = new PiecesContainer<Warrior>();
+        TokensContainer = new PiecesContainer<Token>();
+        BuildingsContainer = new PiecesContainer<Building>();
+
+        var warriors = Enumerable.Repeat(new Warrior(FactionType.MarquiseDeCat), 25).ToArray();
+        WarriorsContainer.AddPieces(warriors);
+
+        var sawmills = Enumerable.Repeat(new Building(BuildingType.Sawmill), 6).ToArray();
+        var workshops = Enumerable.Repeat(new Building(BuildingType.Workshop), 6).ToArray();
+        var recruiters = Enumerable.Repeat(new Building(BuildingType.Recruiter), 6).ToArray();
+        BuildingsContainer.AddPieces(sawmills);
+        BuildingsContainer.AddPieces(workshops);
+        BuildingsContainer.AddPieces(recruiters);
+
+        var keepToken = new Token(TokenType.Keep);
+        var woodTokens = Enumerable.Repeat(new Token(TokenType.Wood), 8).ToArray();
+        TokensContainer.AddPieces(keepToken);
+        TokensContainer.AddPieces(woodTokens);
     }
 
     public PiecesContainer<Warrior> WarriorsContainer { get; init; }
@@ -424,8 +302,16 @@ public record MarquiseFaction : Faction
 
 public record EyrieFaction : Faction
 {
-    public EyrieFaction(int id) : base(id)
+    public EyrieFaction()
     {
+        WarriorsContainer = new PiecesContainer<Warrior>();
+        BuildingsContainer = new PiecesContainer<Building>();
+
+        var warriors = Enumerable.Repeat(new Warrior(FactionType.EyrieDynasties), 20).ToArray();
+        WarriorsContainer.AddPieces(warriors);
+
+        var nests = Enumerable.Repeat(new Building(BuildingType.Nest), 7).ToArray();
+        BuildingsContainer.AddPieces(nests);
     }
 
     public PiecesContainer<Warrior> WarriorsContainer { get; init; }
@@ -435,9 +321,26 @@ public record EyrieFaction : Faction
 
 public record AllianceFaction : Faction
 {
-    public AllianceFaction(int id) : base(id)
+    public AllianceFaction()
     {
+        WarriorsContainer = new PiecesContainer<Warrior>();
+
+        var warriors = Enumerable.Repeat(new Warrior(FactionType.WoodlandAllianse), 10).ToArray();
+        WarriorsContainer.AddPieces(warriors);
+
+        TokensContainer = new PiecesContainer<Token>();
+        var supportTokens = Enumerable.Repeat(new Token(TokenType.Support), 10).ToArray();
+        TokensContainer.AddPieces(supportTokens);
+
+        BuildingsContainer = new PiecesContainer<Building>();
+
+        OfficersContainer = new PiecesContainer<Warrior>();
+        SupportCardsContainer = new PiecesContainer<Card>();
+
+        _usedOfficers = 0;
     }
+
+    private int _usedOfficers;
 
     public PiecesContainer<Token> TokensContainer { get; init; }
 
@@ -447,33 +350,42 @@ public record AllianceFaction : Faction
 
     public PiecesContainer<Warrior> OfficersContainer { get; init; }
 
-    public PiecesContainer<Card> SupportCardsContainer { get; set; }
+    public PiecesContainer<Card> SupportCardsContainer { get; init; }
 
-    public int UsedOfficers { get; set; }
+    public int UsedOfficers => _usedOfficers;
+
+    public void UseOfficer()
+    {
+        if (_usedOfficers >= OfficersContainer.Pieces.Count())
+        {
+            throw new Exception("All officers are already used");
+        }
+
+        _usedOfficers++;
+    }
 }
 
 public record CraftingPiece : BaseEntity
 {
-    public CraftingPiece(int id) : base(id)
-    {
-    }
+    private bool _isActivated;
 
     public ClearingType ClearingType { get; init; }
 
-    private int _factionId { get; init; }
+    public bool IsActivated => _isActivated;
+
+    public void Activate() => _isActivated = true;
+
+    public void Deactivate() => _isActivated = false;
 }
 
 public record Game : BaseEntity
 {
-    public Game(int id) : base(id)
-    {
-    }
-
     private List<Clearing> _clearings;
     private List<Forest> _forests;
     private List<ClearingsPath> _clearingsPaths;
     private List<ClearingsRiverPath> _clearingsRiverPaths;
     private List<ClearingForestPath> _clearingForestPaths;
+    private List<Faction> _factions;
 
     public PiecesContainer<Card> DeckCardsContainer { get; init; }
 
@@ -481,44 +393,29 @@ public record Game : BaseEntity
 
     public PiecesContainer<Item> CraftableItemsContainer { get; init; }
 
-    public IReadOnlyCollection<Clearing> Clearings => _clearings;
+    public IEnumerable<Clearing> Clearings => _clearings.AsReadOnly();
 
-    public IReadOnlyCollection<Forest> Forests => _forests;
+    public IEnumerable<Forest> Forests => _forests.AsReadOnly();
 
-    public IReadOnlyCollection<ClearingsPath> ClearingsPaths => _clearingsPaths;
+    public IEnumerable<ClearingsPath> ClearingsPaths => _clearingsPaths.AsReadOnly();
 
-    public IReadOnlyCollection<ClearingsRiverPath> ClearingsRiverPaths => _clearingsRiverPaths;
+    public IEnumerable<ClearingsRiverPath> ClearingsRiverPaths => _clearingsRiverPaths.AsReadOnly();
 
-    public IReadOnlyCollection<ClearingForestPath> ClearingForestPaths => _clearingForestPaths;
+    public IEnumerable<ClearingForestPath> ClearingForestPaths => _clearingForestPaths.AsReadOnly();
 
-    public ICollection<Faction> Factions { get; set; }
+    public IEnumerable<Faction> Factions => _factions.AsReadOnly();
 }
 
 public record PiecesContainer<T> : BaseEntity where T : BaseEntity
 {
-    public PiecesContainer(int id) : base(id)
+    public PiecesContainer()
     {
         _pieces = new List<T>();
     }
 
-    private List<T> _pieces;
+    private readonly List<T> _pieces;
 
-    public IReadOnlyCollection<T> Pieces => _pieces;
-
-    public void AddPiece(T pieceToAdd)
-    {
-        if (pieceToAdd == null)
-        {
-            throw new ArgumentException("piece is null");
-        }
-
-        if (_pieces.Any(x => x.Id == pieceToAdd.Id))
-        {
-            throw new ArgumentException($"piece ${typeof(T)} with Id:{pieceToAdd.Id} already exists");
-        }
-
-        _pieces.Add(pieceToAdd);
-    }
+    public IEnumerable<T> Pieces => _pieces.AsReadOnly();
 
     public void RemovePiece(int pieceId)
     {
@@ -531,8 +428,13 @@ public record PiecesContainer<T> : BaseEntity where T : BaseEntity
         _pieces.RemoveAt(index);
     }
 
-    public void AddPiecesRange(IEnumerable<T> pieces)
+    public void AddPieces(params T[] pieces)
     {
+        if (pieces == null)
+        {
+            throw new ArgumentException("pieces are null");
+        }
+
         var intersection = pieces.Intersect(_pieces).ToList();
         if (intersection.Count > 0)
         {
