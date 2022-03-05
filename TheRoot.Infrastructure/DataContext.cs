@@ -78,7 +78,7 @@ namespace TheRoot.Infrastructure
     {
         public void Configure(EntityTypeBuilder<AllianseBase> builder)
         {
-            builder.HasKey(x => x.Id);
+            builder.ToTable("AllianseBases");
             builder.HasOne(x => x.ClearingType)
                 .WithMany()
                 .OnDelete(DeleteBehavior.NoAction);

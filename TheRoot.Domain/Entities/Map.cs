@@ -178,6 +178,10 @@ public record Warrior : BaseEntity
         FactionType = faction;
     }
 
+    protected Warrior()
+    {
+    }
+
     public FactionType FactionType { get; init; }
 }
 
@@ -186,6 +190,10 @@ public record Building : BaseEntity
     public Building(BuildingType buildingType)
     {
         SlotPiece = buildingType;
+    }
+
+    protected Building()
+    {
     }
 
     public BuildingType SlotPiece { get; set; }
@@ -219,6 +227,10 @@ public record AllianseBase : Building
         ClearingType = clearingType;
     }
 
+    protected AllianseBase() : base()
+    {
+    }
+
     public ClearingType ClearingType { get; init; }
 }
 
@@ -227,6 +239,10 @@ public record Token : BaseEntity
     public Token(TokenType tokenType)
     {
         TokenType = tokenType;
+    }
+
+    protected Token()
+    {
     }
 
     public TokenType TokenType { get; init; }
@@ -333,6 +349,13 @@ public record AllianceFaction : Faction
         TokensContainer.AddPieces(supportTokens);
 
         BuildingsContainer = new PiecesContainer<Building>();
+        var allianseBases = new AllianseBase[]
+        {
+            new AllianseBase(ClearingType.Fox),
+            new AllianseBase(ClearingType.Mouse),
+            new AllianseBase(ClearingType.Rabbit)
+        };
+        BuildingsContainer.AddPieces(allianseBases);
 
         OfficersContainer = new PiecesContainer<Warrior>();
         SupportCardsContainer = new PiecesContainer<Card>();
