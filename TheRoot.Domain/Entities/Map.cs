@@ -8,6 +8,19 @@ public abstract record BaseEntity
 
 public record Clearing : BaseEntity
 {
+    protected Clearing()
+    {
+        WarriorsContainer = new PiecesContainer<Warrior>();
+        TokensContainer = new PiecesContainer<Token>();
+        BuildingsContainer = new PiecesContainer<Building>();
+    }
+
+    public Clearing(ClearingType clearingType, int maxNumberOfBUildings) : this()
+    {
+        ClearingType = clearingType;
+        MaxNumberOfBuildings = maxNumberOfBUildings;
+    }
+
     public ClearingType ClearingType { get; init; }
 
     public PiecesContainer<Warrior> WarriorsContainer { get; init; }
@@ -21,6 +34,16 @@ public record Clearing : BaseEntity
 
 public record ClearingsPath : BaseEntity
 {
+    protected ClearingsPath()
+    {
+    }
+
+    public ClearingsPath(Clearing fromClearing, Clearing toClearing)
+    {
+        FromClearing = fromClearing;
+        ToClearing = toClearing;
+    }
+
     public Clearing FromClearing { get; init; }
 
     public Clearing ToClearing { get; init; }
@@ -28,6 +51,16 @@ public record ClearingsPath : BaseEntity
 
 public record ClearingsRiverPath : BaseEntity
 {
+    protected ClearingsRiverPath()
+    {
+    }
+
+    public ClearingsRiverPath(Clearing fromClearing, Clearing toClearing)
+    {
+        FromClearing = fromClearing;
+        ToClearing = toClearing;
+    }
+
     public Clearing FromClearing { get; init; }
 
     public Clearing ToClearing { get; init; }
@@ -35,13 +68,20 @@ public record ClearingsRiverPath : BaseEntity
 
 public record ClearingForestPath : BaseEntity
 {
+    protected ClearingForestPath()
+    {
+    }
+
+    public ClearingForestPath(Clearing clearing, Forest forest)
+    {
+        Clearing = clearing;
+        Forest = forest;
+    }
+
     public Clearing Clearing { get; init; }
 
     public Forest Forest { get; init; }
 }
-#endregion
-
-#region Mutable Entities
 #endregion
 
 public class FactionType : Enumeration
@@ -152,6 +192,15 @@ public enum CardType
 
 public record Item : BaseEntity
 {
+    protected Item()
+    {
+    }
+
+    public Item(ItemType itemType)
+    {
+        ItemType = itemType;
+    }
+
     public ItemType ItemType { get; init; }
 }
 
@@ -161,11 +210,27 @@ public record Forest : BaseEntity
 
 public record Card : BaseEntity
 {
+    protected Card()
+    {
+        _costTypeList = new List<CostType>();
+    }
+
+    public Card(CardSuit cardSuit,
+        CardType cardType,
+        IEnumerable<CostType> cost)
+    {
+        _costTypeList = cost.ToList();
+        CardSuit = cardSuit;
+        CardType = cardType;
+    }
+
+    private List<CostType> _costTypeList;
+
     public CardSuit CardSuit { get; init; }
 
     public CardType CardType { get; init; }
 
-    public virtual ICollection<CostType> Cost { get; init; }
+    public IEnumerable<CostType> Cost => _costTypeList.AsEnumerable();
 }
 
 /// <summary>
@@ -289,12 +354,11 @@ public record MarquiseFaction : Faction
 {
     protected MarquiseFaction() : base()
     {
-        WarriorsContainer = new PiecesContainer<Warrior>();
         TokensContainer = new PiecesContainer<Token>();
         BuildingsContainer = new PiecesContainer<Building>();
 
         var warriors = Enumerable.Repeat(new Warrior(FactionType.MarquiseDeCat), 25).ToArray();
-        WarriorsContainer.AddPieces(warriors);
+        WarriorsContainer = new PiecesContainer<Warrior>(warriors);
 
         var sawmills = Enumerable.Repeat(new Building(BuildingType.Sawmill), 6).ToArray();
         var workshops = Enumerable.Repeat(new Building(BuildingType.Workshop), 6).ToArray();
@@ -390,6 +454,16 @@ public record AllianceFaction : Faction
 
 public record CraftingPiece : BaseEntity
 {
+    protected CraftingPiece()
+    {
+    }
+
+    public CraftingPiece(ClearingType clearingType)
+    {
+        _isActivated = false;
+        ClearingType = clearingType;
+    }
+
     private bool _isActivated;
 
     public ClearingType ClearingType { get; init; }
@@ -403,6 +477,40 @@ public record CraftingPiece : BaseEntity
 
 public record Game : BaseEntity
 {
+    protected Game()
+    {
+        _clearings = MapData.GetClearings();
+        _forests = MapData.GetForests();
+        _clearingsPaths = MapData.GetClearingsPaths();
+        _clearingForestPaths = MapData.GetClearingForestPaths();
+        _factions = new List<Faction>();
+
+        var craftableItems = new Item[]
+        {
+            new Item(ItemType.Bag),
+            new Item(ItemType.Bag),
+            new Item(ItemType.Boot),
+            new Item(ItemType.Boot),
+            new Item(ItemType.Sword),
+            new Item(ItemType.Sword),
+            new Item(ItemType.Teapot),
+            new Item(ItemType.Teapot),
+            new Item(ItemType.Money),
+            new Item(ItemType.Money),
+            new Item(ItemType.Crossbow),
+            new Item(ItemType.Hammer)
+        };
+
+        DeckCardsContainer = new PiecesContainer<Card>();
+        DiscardCardsContainer = new PiecesContainer<Card>();
+        CraftableItemsContainer = new PiecesContainer<Item>(craftableItems);
+    }
+
+    public Game(IEnumerable<Faction> factions) : this()
+    {
+        _factions = factions.ToList();
+    }
+
     private List<Clearing> _clearings;
     private List<Forest> _forests;
     private List<ClearingsPath> _clearingsPaths;
@@ -434,6 +542,11 @@ public record PiecesContainer<T> : BaseEntity where T : BaseEntity
     public PiecesContainer()
     {
         _pieces = new List<T>();
+    }
+
+    public PiecesContainer(IEnumerable<T> pieces)
+    {
+        _pieces = pieces.ToList();
     }
 
     private readonly List<T> _pieces;
@@ -476,5 +589,210 @@ public record PiecesContainer<T> : BaseEntity where T : BaseEntity
         }
 
         _pieces.RemoveAll(x => pieces.Any(i => i.Id == x.Id));
+    }
+}
+
+public static class MapData
+{
+    private static readonly Clearing clearing1 = new(ClearingType.Fox, 2)
+    {
+        Id = 1,
+    };
+
+    private static readonly Clearing clearing2 = new(ClearingType.Mouse, 2)
+    {
+        Id = 2,
+    };
+
+    private static readonly Clearing clearing3 = new(ClearingType.Rabbit, 1)
+    {
+        Id = 3,
+    };
+
+    private static readonly Clearing clearing4 = new(ClearingType.Rabbit, 2)
+    {
+        Id = 4,
+    };
+
+    private static readonly Clearing clearing5 = new(ClearingType.Rabbit, 2)
+    {
+        Id = 5,
+    };
+
+    private static readonly Clearing clearing6 = new(ClearingType.Fox, 2)
+    {
+        Id = 6,
+    };
+
+    private static readonly Clearing clearing7 = new(ClearingType.Fox, 2)
+    {
+        Id = 7,
+    };
+
+    private static readonly Clearing clearing8 = new(ClearingType.Mouse, 2)
+    {
+        Id = 8,
+    };
+
+    private static readonly Clearing clearing9 = new(ClearingType.Mouse, 3)
+    {
+        Id = 9,
+    };
+
+    private static readonly Clearing clearing10 = new(ClearingType.Mouse, 2)
+    {
+        Id = 10,
+    };
+
+    private static readonly Clearing clearing11 = new(ClearingType.Fox, 2)
+    {
+        Id = 11,
+    };
+
+    private static readonly Clearing clearing12 = new(ClearingType.Rabbit, 1)
+    {
+        Id = 12,
+    };
+
+    private static readonly Forest forest1 = new()
+    {
+        Id = 1
+    };
+    private static readonly Forest forest2 = new()
+    {
+        Id = 2
+    };
+    private static readonly Forest forest3 = new()
+    {
+        Id = 3
+    };
+    private static readonly Forest forest4 = new()
+    {
+        Id = 4
+    };
+    private static readonly Forest forest5 = new()
+    {
+        Id = 5
+    };
+    private static readonly Forest forest6 = new()
+    {
+        Id = 6
+    };
+    private static readonly Forest forest7 = new()
+    {
+        Id = 7
+    };
+
+    public static List<Clearing> GetClearings()
+    {
+        var clearings = new List<Clearing>
+        {
+            clearing1,
+            clearing2,
+            clearing3,
+            clearing4,
+            clearing5,
+            clearing6,
+            clearing7,
+            clearing8,
+            clearing9,
+            clearing10,
+            clearing11,
+            clearing12
+        };
+
+        return clearings;
+    }
+
+    public static List<Forest> GetForests()
+    {
+        var forests = new List<Forest>
+        {
+            forest1,
+            forest2,
+            forest3,
+            forest4,
+            forest5,
+            forest6,
+            forest7
+        };
+
+        return forests;
+    }
+
+    public static List<ClearingsPath> GetClearingsPaths()
+    {
+        var clearingsPaths = new List<ClearingsPath>
+        {
+            new ClearingsPath(clearing1, clearing2),
+            new ClearingsPath(clearing1, clearing4),
+            new ClearingsPath(clearing1, clearing5),
+            new ClearingsPath(clearing2, clearing3),
+            new ClearingsPath(clearing2, clearing6),
+            new ClearingsPath(clearing3, clearing6),
+            new ClearingsPath(clearing3, clearing7),
+            new ClearingsPath(clearing4, clearing10),
+            new ClearingsPath(clearing5, clearing6),
+            new ClearingsPath(clearing5, clearing10),
+            new ClearingsPath(clearing6, clearing8),
+            new ClearingsPath(clearing6, clearing9),
+            new ClearingsPath(clearing7, clearing9),
+            new ClearingsPath(clearing8, clearing11),
+            new ClearingsPath(clearing8, clearing12),
+            new ClearingsPath(clearing9, clearing12),
+            new ClearingsPath(clearing10, clearing11),
+            new ClearingsPath(clearing11, clearing12)
+        };
+
+        return clearingsPaths;
+    }
+
+    public static List<ClearingsRiverPath> GetClearingsRiverPaths() 
+    {
+        var clearingsRiverPaths = new List<ClearingsRiverPath>
+        {
+            new ClearingsRiverPath(clearing3, clearing9),
+            new ClearingsRiverPath(clearing4, clearing5),
+            new ClearingsRiverPath(clearing5, clearing8),
+            new ClearingsRiverPath(clearing8, clearing9)
+        };
+
+        return clearingsRiverPaths;
+    }
+
+    public static List<ClearingForestPath> GetClearingForestPaths()
+    {
+        var clearingForestPaths = new List<ClearingForestPath>
+        {
+            new ClearingForestPath(clearing1, forest1),
+            new ClearingForestPath(clearing4, forest1),
+            new ClearingForestPath(clearing5, forest1),
+            new ClearingForestPath(clearing10, forest1),
+            new ClearingForestPath(clearing1, forest2),
+            new ClearingForestPath(clearing2, forest2),
+            new ClearingForestPath(clearing5, forest2),
+            new ClearingForestPath(clearing6, forest2),
+            new ClearingForestPath(clearing5, forest3),
+            new ClearingForestPath(clearing6, forest3),
+            new ClearingForestPath(clearing8, forest3),
+            new ClearingForestPath(clearing10, forest3),
+            new ClearingForestPath(clearing11, forest3),
+            new ClearingForestPath(clearing2, forest4),
+            new ClearingForestPath(clearing3, forest4),
+            new ClearingForestPath(clearing6, forest4),
+            new ClearingForestPath(clearing3, forest5),
+            new ClearingForestPath(clearing6, forest5),
+            new ClearingForestPath(clearing7, forest5),
+            new ClearingForestPath(clearing9, forest5),
+            new ClearingForestPath(clearing6, forest6),
+            new ClearingForestPath(clearing8, forest6),
+            new ClearingForestPath(clearing9, forest6),
+            new ClearingForestPath(clearing12, forest6),
+            new ClearingForestPath(clearing8, forest7),
+            new ClearingForestPath(clearing11, forest7),
+            new ClearingForestPath(clearing12, forest7)
+        };
+
+        return clearingForestPaths;
     }
 }

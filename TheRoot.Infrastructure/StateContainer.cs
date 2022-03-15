@@ -18,65 +18,85 @@ public static class StateContainer
 
     static StateContainer()
     {
-        var clearing1 = new Clearing(id: 1)
+        var clearing1 = new Clearing(ClearingType.Fox, 2)
         {
+            Id = 1,
             ClearingType = ClearingType.Fox
         };
 
-        var clearing2 = new Clearing(id: 2)
+        var clearing2 = new Clearing(ClearingType.Mouse, 2)
         {
+            Id = 2,
             ClearingType = ClearingType.Mouse
         };
 
-        var clearing3 = new Clearing(id: 3)
+        var clearing3 = new Clearing(ClearingType.Rabbit, 1)
         {
+            Id = 3,
             ClearingType = ClearingType.Rabbit
         };
 
-        var clearing4 = new Clearing(id: 4)
+        var clearing4 = new Clearing(ClearingType.Rabbit, 2)
         {
+            Id = 4,
             ClearingType = ClearingType.Rabbit
         };
 
-        var clearing5 = new Clearing(id: 5)
+        var clearing5 = new Clearing(ClearingType.Rabbit, 2)
         {
+            Id = 5,
             ClearingType = ClearingType.Rabbit
         };
 
-        var clearing6 = new Clearing(id: 6)
+        var clearing6 = new Clearing(ClearingType.Fox, 2)
         {
+            Id = 6,
             ClearingType = ClearingType.Fox
         };
 
-        var clearing7 = new Clearing(id: 7)
+        var clearing7 = new Clearing(ClearingType.Fox, 2)
         {
+            Id = 7,
             ClearingType = ClearingType.Fox
         };
 
-        var clearing8 = new Clearing(id: 8)
+        var clearing8 = new Clearing(ClearingType.Mouse, 2)
         {
+            Id = 8,
             ClearingType = ClearingType.Mouse
         };
 
-        var clearing9 = new Clearing(id: 9)
+        var clearing9 = new Clearing(ClearingType.Mouse, 3)
         {
+            Id = 9,
             ClearingType = ClearingType.Mouse
         };
 
-        var clearing10 = new Clearing(id: 10)
+        var clearing10 = new Clearing(ClearingType.Mouse, 2)
         {
+            Id = 10,
             ClearingType = ClearingType.Mouse
         };
 
-        var clearing11 = new Clearing(id: 11)
+        var clearing11 = new Clearing(ClearingType.Fox, 2)
         {
+            Id = 11,
             ClearingType = ClearingType.Fox
         };
 
-        var clearing12 = new Clearing(id: 12)
+        var clearing12 = new Clearing(ClearingType.Rabbit, 1)
         {
+            Id = 12,
             ClearingType = ClearingType.Rabbit
         };
+
+        var forest1 = new Forest();
+        var forest2 = new Forest();
+        var forest3 = new Forest();
+        var forest4 = new Forest();
+        var forest5 = new Forest();
+        var forest6 = new Forest();
+        var forest7 = new Forest();
 
         Clearings = new List<Clearing>
         {
@@ -96,271 +116,75 @@ public static class StateContainer
 
         Forests = new List<Forest>
         {
-            new Forest(1),
-            new Forest(2),
-            new Forest(3),
-            new Forest(4),
-            new Forest(5),
-            new Forest(6),
-            new Forest(7),
+            forest1,
+            forest2,
+            forest3,
+            forest4,
+            forest5,
+            forest6,
+            forest7
         };
 
-        /*ClearingsPaths = new List<ClearingsPath>
+        ClearingsPaths = new List<ClearingsPath>
         {
-            new ClearingsPath(1)
-            {
-                FromClearing.Id = 1,
-                ToClearing.Id = 2
-            },
-            new ClearingsPath(2)
-            {
-                FromClearingId = 1,
-                ToClearingId = 4
-            },
-            new ClearingsPath(3)
-            {
-                FromClearingId = 1,
-                ToClearingId = 5
-            },
-            new ClearingsPath(4)
-            {
-                FromClearingId = 2,
-                ToClearingId = 3
-            },
-            new ClearingsPath(5)
-            {
-                FromClearingId = 2,
-                ToClearingId = 6
-            },
-            new ClearingsPath(6)
-            {
-                FromClearingId = 3,
-                ToClearingId = 6
-            },
-            new ClearingsPath(7)
-            {
-                FromClearingId = 3,
-                ToClearingId = 7
-            },
-            new ClearingsPath(8)
-            {
-                FromClearingId = 4,
-                ToClearingId = 10
-            },
-            new ClearingsPath(9)
-            {
-                FromClearingId = 5,
-                ToClearingId = 6
-            },
-            new ClearingsPath(10)
-            {
-                FromClearingId = 5,
-                ToClearingId = 10
-            },
-            new ClearingsPath(11)
-            {
-                FromClearingId = 6,
-                ToClearingId = 8
-            },
-            new ClearingsPath(12)
-            {
-                FromClearingId = 6,
-                ToClearingId = 9
-            },
-            new ClearingsPath(13)
-            {
-                FromClearingId = 7,
-                ToClearingId = 9
-            },
-            new ClearingsPath(14)
-            {
-                FromClearingId = 8,
-                ToClearingId = 11
-            },
-            new ClearingsPath(15)
-            {
-                FromClearingId = 8,
-                ToClearingId = 12
-            },
-            new ClearingsPath(16)
-            {
-                FromClearingId = 9,
-                ToClearingId = 12
-            },
-            new ClearingsPath(17)
-            {
-                FromClearingId = 10,
-                ToClearingId = 11
-            },
-            new ClearingsPath(18)
-            {
-                FromClearingId = 11,
-                ToClearingId = 12
-            }
-        };*/
+            new ClearingsPath(clearing1, clearing2),
+            new ClearingsPath(clearing1, clearing4),
+            new ClearingsPath(clearing1, clearing5),
+            new ClearingsPath(clearing2, clearing3),
+            new ClearingsPath(clearing2, clearing6),
+            new ClearingsPath(clearing3, clearing6),
+            new ClearingsPath(clearing3, clearing7),
+            new ClearingsPath(clearing4, clearing10),
+            new ClearingsPath(clearing5, clearing6),
+            new ClearingsPath(clearing5, clearing10),
+            new ClearingsPath(clearing6, clearing8),
+            new ClearingsPath(clearing6, clearing9),
+            new ClearingsPath(clearing7, clearing9),
+            new ClearingsPath(clearing8, clearing11),
+            new ClearingsPath(clearing8, clearing12),
+            new ClearingsPath(clearing9, clearing12),
+            new ClearingsPath(clearing10, clearing11),
+            new ClearingsPath(clearing11, clearing12)
+        };
 
-        /*ClearingsRiverPaths = new List<ClearingsRiverPath>
+        ClearingsRiverPaths = new List<ClearingsRiverPath>
         {
-            new ClearingsRiverPath(1)
-            {
-                FromClearingId = 3,
-                ToClearingId = 9
-            },
-            new ClearingsRiverPath(2)
-            {
-                FromClearingId = 4,
-                ToClearingId = 5
-            },
-            new ClearingsRiverPath(3)
-            {
-                FromClearingId = 5,
-                ToClearingId = 8
-            },
-            new ClearingsRiverPath(4)
-            {
-                FromClearingId = 8,
-                ToClearingId = 9
-            },
-        };*/
+            new ClearingsRiverPath(clearing3, clearing9),
+            new ClearingsRiverPath(clearing4, clearing5),
+            new ClearingsRiverPath(clearing5, clearing8),
+            new ClearingsRiverPath(clearing8, clearing9)
+        };
 
-        /*ClearingForestPaths = new List<ClearingForestPath>
+        ClearingForestPaths = new List<ClearingForestPath>
         {
-            new ClearingForestPath(1)
-            {
-                ForestId = 1,
-                ClearingId = 1
-            },
-            new ClearingForestPath(2)
-            {
-                ForestId = 1,
-                ClearingId = 4
-            },
-            new ClearingForestPath(3)
-            {
-                ForestId = 1,
-                ClearingId = 5
-            },
-            new ClearingForestPath(4)
-            {
-                ForestId = 1,
-                ClearingId = 10
-            },
-            new ClearingForestPath(5)
-            {
-                ForestId = 2,
-                ClearingId = 1
-            },
-            new ClearingForestPath(6)
-            {
-                ForestId = 2,
-                ClearingId = 2
-            },
-            new ClearingForestPath(7)
-            {
-                ForestId = 2,
-                ClearingId = 5
-            },
-            new ClearingForestPath(8)
-            {
-                ForestId = 2,
-                ClearingId = 6
-            },
-            new ClearingForestPath(9)
-            {
-                ForestId = 3,
-                ClearingId = 5
-            },
-            new ClearingForestPath(10)
-            {
-                ForestId = 3,
-                ClearingId = 6
-            },
-            new ClearingForestPath(11)
-            {
-                ForestId = 3,
-                ClearingId = 8
-            },
-            new ClearingForestPath(12)
-            {
-                ForestId = 3,
-                ClearingId = 10
-            },
-            new ClearingForestPath(13)
-            {
-                ForestId = 3,
-                ClearingId = 11
-            },
-            new ClearingForestPath(14)
-            {
-                ForestId = 4,
-                ClearingId = 2
-            },
-            new ClearingForestPath(15)
-            {
-                ForestId = 4,
-                ClearingId = 3
-            },
-            new ClearingForestPath(16)
-            {
-                ForestId = 4,
-                ClearingId = 6
-            },
-            new ClearingForestPath(17)
-            {
-                ForestId = 5,
-                ClearingId = 3
-            },
-            new ClearingForestPath(18)
-            {
-                ForestId = 5,
-                ClearingId = 6
-            },
-            new ClearingForestPath(19)
-            {
-                ForestId = 5,
-                ClearingId = 7
-            },
-            new ClearingForestPath(20)
-            {
-                ForestId = 5,
-                ClearingId = 9
-            },
-            new ClearingForestPath(21)
-            {
-                ForestId = 6,
-                ClearingId = 6
-            },
-            new ClearingForestPath(22)
-            {
-                ForestId = 6,
-                ClearingId = 8
-            },
-            new ClearingForestPath(23)
-            {
-                ForestId = 6,
-                ClearingId = 9
-            },
-            new ClearingForestPath(24)
-            {
-                ForestId = 6,
-                ClearingId = 12
-            },
-            new ClearingForestPath(25)
-            {
-                ForestId = 7,
-                ClearingId = 8
-            },
-            new ClearingForestPath(26)
-            {
-                ForestId = 7,
-                ClearingId = 11
-            },
-            new ClearingForestPath(27)
-            {
-                ForestId = 7,
-                ClearingId = 12
-            }
-        };*/
+            new ClearingForestPath(clearing1, forest1),
+            new ClearingForestPath(clearing4, forest1),
+            new ClearingForestPath(clearing5, forest1),
+            new ClearingForestPath(clearing10, forest1),
+            new ClearingForestPath(clearing1, forest2),
+            new ClearingForestPath(clearing2, forest2),
+            new ClearingForestPath(clearing5, forest2),
+            new ClearingForestPath(clearing6, forest2),
+            new ClearingForestPath(clearing5, forest3),
+            new ClearingForestPath(clearing6, forest3),
+            new ClearingForestPath(clearing8, forest3),
+            new ClearingForestPath(clearing10, forest3),
+            new ClearingForestPath(clearing11, forest3),
+            new ClearingForestPath(clearing2, forest4),
+            new ClearingForestPath(clearing3, forest4),
+            new ClearingForestPath(clearing6, forest4),
+            new ClearingForestPath(clearing3, forest5),
+            new ClearingForestPath(clearing6, forest5),
+            new ClearingForestPath(clearing7, forest5),
+            new ClearingForestPath(clearing9, forest5),
+            new ClearingForestPath(clearing6, forest6),
+            new ClearingForestPath(clearing8, forest6),
+            new ClearingForestPath(clearing9, forest6),
+            new ClearingForestPath(clearing12, forest6),
+            new ClearingForestPath(clearing8, forest7),
+            new ClearingForestPath(clearing11, forest7),
+            new ClearingForestPath(clearing12, forest7)
+        };
 
         Factions = new List<FactionType>
         {
