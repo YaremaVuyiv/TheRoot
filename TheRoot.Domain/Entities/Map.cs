@@ -135,6 +135,17 @@ public class ItemType : Enumeration
     }
 }
 
+public class TurnPhase : Enumeration
+{
+    public static TurnPhase Birdsong = new(1, nameof(Birdsong));
+    public static TurnPhase Daylight = new(2, nameof(Daylight));
+    public static TurnPhase Evening = new(3, nameof(Evening));
+
+    public TurnPhase(int id, string name) : base(id, name)
+    {
+    }
+}
+
 public enum BuildingType
 {
     Sawmill,
@@ -483,7 +494,7 @@ public record Game : BaseEntity
         _forests = MapData.GetForests();
         _clearingsPaths = MapData.GetClearingsPaths();
         _clearingForestPaths = MapData.GetClearingForestPaths();
-        _factions = new List<Faction>();
+        _factions = new LinkedList<Faction>();
 
         var craftableItems = new Item[]
         {
@@ -504,11 +515,14 @@ public record Game : BaseEntity
         DeckCardsContainer = new PiecesContainer<Card>();
         DiscardCardsContainer = new PiecesContainer<Card>();
         CraftableItemsContainer = new PiecesContainer<Item>(craftableItems);
+        _currentTurnPhase = TurnPhase.Birdsong;
     }
 
     public Game(IEnumerable<Faction> factions) : this()
     {
-        _factions = factions.ToList();
+
+        _factions = new LinkedList<Faction>(_factions);
+        _currentFactionNode = _factions.First;
     }
 
     private List<Clearing> _clearings;
@@ -516,7 +530,10 @@ public record Game : BaseEntity
     private List<ClearingsPath> _clearingsPaths;
     private List<ClearingsRiverPath> _clearingsRiverPaths;
     private List<ClearingForestPath> _clearingForestPaths;
-    private List<Faction> _factions;
+
+    private LinkedList<Faction> _factions;
+    private LinkedListNode<Faction> _currentFactionNode;
+    private TurnPhase _currentTurnPhase;
 
     public PiecesContainer<Card> DeckCardsContainer { get; init; }
 
@@ -534,7 +551,28 @@ public record Game : BaseEntity
 
     public IEnumerable<ClearingForestPath> ClearingForestPaths => _clearingForestPaths.AsReadOnly();
 
-    public IEnumerable<Faction> Factions => _factions.AsReadOnly();
+    public IEnumerable<Faction> Factions => _factions.ToList().AsReadOnly();
+
+    public virtual TurnPhase CurrentTurnPhase => _currentTurnPhase;
+
+    public virtual Faction CurrentFaction => _currentFactionNode.Value;
+
+    public void TakeCardFromDeck(FactionType factionType)
+    {
+        var faction = _factions.First(x => x.FactionType == factionType);
+
+        var rnd = new Random();
+        var cardIndex = rnd.Next(0, DeckCardsContainer.Pieces.Count());
+        var card = DeckCardsContainer.Pieces.ToList()[cardIndex];
+        DeckCardsContainer.RemovePiecesRange(card.Id);
+        faction.FactionCardsContainer.AddPieces(card);
+    }
+
+    public void NextPlayerTurn()
+    {
+        _currentFactionNode = _currentFactionNode.Next ?? _factions.First;
+        _currentTurnPhase = TurnPhase.Birdsong;
+    }
 }
 
 public record PiecesContainer<T> : BaseEntity where T : BaseEntity
@@ -553,17 +591,6 @@ public record PiecesContainer<T> : BaseEntity where T : BaseEntity
 
     public IEnumerable<T> Pieces => _pieces.AsReadOnly();
 
-    public void RemovePiece(int pieceId)
-    {
-        var index = _pieces.FindIndex(x => x.Id == pieceId);
-        if (index < 0)
-        {
-            throw new ArgumentException($"Piece {typeof(T)} with id {pieceId} doens't exist");
-        }
-
-        _pieces.RemoveAt(index);
-    }
-
     public void AddPieces(params T[] pieces)
     {
         if (pieces == null)
@@ -580,15 +607,15 @@ public record PiecesContainer<T> : BaseEntity where T : BaseEntity
         _pieces.AddRange(pieces);
     }
 
-    public void RemovePiecesRange(IEnumerable<T> pieces)
+    public void RemovePiecesRange(params int[] pieceIds)
     {
-        var exception = pieces.Except(_pieces).ToList();
+        var exception = pieceIds.Except(_pieces.Select(x => x.Id)).ToList();
         if (exception.Count > 0)
         {
-            throw new ArgumentException($"Piece {typeof(T)} with Id:{exception.First().Id} is not possible to delete");
+            throw new ArgumentException($"Piece {typeof(T)} with Id:{exception.First()} is not possible to delete");
         }
 
-        _pieces.RemoveAll(x => pieces.Any(i => i.Id == x.Id));
+        _pieces.RemoveAll(x => pieceIds.Any(i => i == x.Id));
     }
 }
 
@@ -794,5 +821,37 @@ public static class MapData
         };
 
         return clearingForestPaths;
+    }
+
+    public static List<Card> GetCards()
+    {
+        var cards = new List<Card>
+        {
+            new Card(CardSuit.Bird, CardType.Bag, new List<CostType>
+            {
+                CostType.Fox
+            })
+            {
+                Id = 1
+            },
+            new Card(CardSuit.Rabbit, CardType.Boot, new List<CostType>
+            {
+                CostType.Rabbit
+            })
+            {
+                Id = 2
+            },
+            new Card(CardSuit.Fox, CardType.Favor, new List<CostType>
+            {
+                CostType.Fox,
+                CostType.Fox,
+                CostType.Fox,
+            })
+            {
+                Id = 3
+            }
+        };
+
+        return cards;
     }
 }
