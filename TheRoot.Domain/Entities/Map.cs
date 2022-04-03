@@ -361,7 +361,7 @@ public abstract record Faction : BaseEntity
     public int Score => _score;
 }
 
-public record MarquiseFaction : Faction
+public record MarquiseFaction : Faction, IWarriorFaction, IBuildingFaction, ITokenFaction
 {
     protected MarquiseFaction() : base()
     {
@@ -388,10 +388,10 @@ public record MarquiseFaction : Faction
 
     public PiecesContainer<Token> TokensContainer { get; init; }
 
-    public PiecesContainer<Building> BuildingsContainer { get; set; }
+    public PiecesContainer<Building> BuildingsContainer { get; init; }
 }
 
-public record EyrieFaction : Faction
+public record EyrieFaction : Faction, IWarriorFaction, IBuildingFaction
 {
     public EyrieFaction()
     {
@@ -407,10 +407,10 @@ public record EyrieFaction : Faction
 
     public PiecesContainer<Warrior> WarriorsContainer { get; init; }
 
-    public PiecesContainer<Building> BuildingsContainer { get; set; }
+    public PiecesContainer<Building> BuildingsContainer { get; init; }
 }
 
-public record AllianceFaction : Faction
+public record AllianceFaction : Faction, IWarriorFaction, ITokenFaction, IBuildingFaction
 {
     public AllianceFaction()
     {
@@ -442,7 +442,7 @@ public record AllianceFaction : Faction
 
     public PiecesContainer<Token> TokensContainer { get; init; }
 
-    public PiecesContainer<Building> BuildingsContainer { get; set; }
+    public PiecesContainer<Building> BuildingsContainer { get; init; }
 
     public PiecesContainer<Warrior> WarriorsContainer { get; init; }
 
@@ -854,4 +854,19 @@ public static class MapData
 
         return cards;
     }
+}
+
+public interface ITokenFaction
+{
+    PiecesContainer<Token> TokensContainer { get; init; }
+}
+
+public interface IWarriorFaction
+{
+    PiecesContainer<Warrior> WarriorsContainer { get; init; }
+}
+
+public interface IBuildingFaction
+{
+    PiecesContainer<Building> BuildingsContainer { get; init; }
 }
