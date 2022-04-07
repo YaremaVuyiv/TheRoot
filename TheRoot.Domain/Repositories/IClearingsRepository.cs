@@ -1,10 +1,11 @@
 ﻿using TheRoot.Domain.Entities;
+using TheRoot.Domain.Entities.Pieces;
 
 namespace TheRoot.Domain.Repositories;
 
 public interface IClearingsRepository
 {
-    Task<Clearing> GetClearingByIdAsync(int id);
+    Task<Clearing> GetClearingByIdAsync(int gameId, int clearingId);
 
     Task<List<int>> GetAdjacentClearingsAsync(int clearingId);
 
@@ -27,4 +28,6 @@ public interface IClearingsRepository
     Task<Dictionary<FactionType, int>> GetClearingWarriorsAsync(int clearingId);
 
     Task<List<FactionType>> GetFactionsAsync();
+
+    Task<Faction> GetFactionAsync(int gameId, FactionType factionType);
 }
